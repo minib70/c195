@@ -30,12 +30,12 @@
             <Font size="22.0" />
          </font>
       </Label>
-      <TextField layoutX="162.0" layoutY="230.0" prefHeight="36.0" prefWidth="247.0">
+      <TextField layoutX="162.0" layoutY="230.0" onAction="#onEnter" prefHeight="36.0" prefWidth="247.0">
          <font>
             <Font size="22.0" />
          </font>
       </TextField>
-      <PasswordField layoutX="162.0" layoutY="330.0" prefHeight="24.0" prefWidth="247.0">
+      <PasswordField layoutX="162.0" layoutY="330.0" onAction="#onEnter" prefHeight="24.0" prefWidth="247.0">
          <font>
             <Font size="22.0" />
          </font>
@@ -45,6 +45,6 @@
             <Font size="36.0" />
          </font>
       </Label>
-      <Button layoutX="311.0" layoutY="425.0" mnemonicParsing="false" prefHeight="68.0" prefWidth="98.0" styleClass="button-raised" text="Log In" />
+      <Button layoutX="311.0" layoutY="425.0" mnemonicParsing="false" onAction="#onEnter" prefHeight="68.0" prefWidth="98.0" styleClass="button-raised" text="Log In" />
    </children>
 </AnchorPane>
