@@ -5,6 +5,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.MenuItem;
 import javafx.event.ActionEvent;
+import javafx.scene.layout.VBox;
 
 public class RootLayoutController {
     private C195 c195; // TODO: May not need this

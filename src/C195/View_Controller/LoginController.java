@@ -7,7 +7,9 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
@@ -15,11 +17,13 @@ import java.util.ResourceBundle;
 
 public class LoginController implements Initializable {
     private VBox rootLayout;
+    private Stage primaryStage;
     private final String requiredPassword = "test";
     @FXML private TextField textFieldUsername, textFieldPassword;
 
-    public LoginController(VBox rootLayout) {
+    public LoginController(VBox rootLayout, Stage primaryStage) {
         this.rootLayout = rootLayout;
+        this.primaryStage = primaryStage;
     }
 
     public void onEnter() throws IOException { //TODO: Really set up password stuff.
@@ -50,8 +54,11 @@ public class LoginController implements Initializable {
         loader.setController(controller);
 
         AnchorPane appointments = loader.load();
+        // Removes just the login screen from root
+        rootLayout.getChildren().remove(1);
         rootLayout.getChildren().add(appointments);
-        //rootLayout.set
+        primaryStage.setHeight(appointments.getPrefHeight());
+        primaryStage.setWidth(appointments.getPrefWidth());
     }
 
     @Override

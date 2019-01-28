@@ -22,7 +22,7 @@ public class C195 extends Application {
         rootLayout = new VBox();
 
         initRootLayout();
-        showLoginScreen(rootLayout);
+        showLoginScreen(rootLayout, primaryStage);
     }
 
     private void initRootLayout() throws IOException {
@@ -37,12 +37,13 @@ public class C195 extends Application {
         primaryStage.setScene(scene);
         primaryStage.show();
         primaryStage.setResizable(false);
+        primaryStage.sizeToScene();
     }
 
-    private void showLoginScreen(VBox rootLayout) throws IOException {
+    private void showLoginScreen(VBox rootLayout, Stage primaryStage) throws IOException {
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(C195.class.getResource("View_Controller/Login.fxml"));
-        LoginController controller = new LoginController(rootLayout);
+        LoginController controller = new LoginController(rootLayout, primaryStage);
         loader.setController(controller);
 
         AnchorPane login = loader.load();
