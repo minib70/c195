@@ -18,12 +18,14 @@ import java.util.ResourceBundle;
 public class LoginController implements Initializable {
     private VBox rootLayout;
     private Stage primaryStage;
+    private RootLayoutController rootLayoutController;
     private final String requiredPassword = "test";
     @FXML private TextField textFieldUsername, textFieldPassword;
 
-    public LoginController(VBox rootLayout, Stage primaryStage) {
+    public LoginController(VBox rootLayout, Stage primaryStage, RootLayoutController rootLayoutController) {
         this.rootLayout = rootLayout;
         this.primaryStage = primaryStage;
+        this.rootLayoutController = rootLayoutController;
     }
 
     public void onEnter() throws IOException { //TODO: Really set up password stuff.
@@ -59,10 +61,11 @@ public class LoginController implements Initializable {
         rootLayout.getChildren().add(appointments);
         primaryStage.setHeight(appointments.getPrefHeight());
         primaryStage.setWidth(appointments.getPrefWidth());
+        rootLayoutController.showViewMenu();
     }
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-
+        //rootLayoutController.hideViewMenu();
     }
 }

@@ -14,6 +14,7 @@ import java.io.IOException;
 public class C195 extends Application {
     private Stage primaryStage;
     private VBox rootLayout;
+    private RootLayoutController rootLayoutController;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -29,8 +30,8 @@ public class C195 extends Application {
         // Load root layout fxml file
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(C195.class.getResource("View_Controller/RootLayout.fxml"));
-        RootLayoutController controller = new RootLayoutController(this);
-        loader.setController(controller);
+        rootLayoutController = new RootLayoutController(this);
+        loader.setController(rootLayoutController);
         rootLayout = loader.load();
 
         Scene scene = new Scene(rootLayout, 450, 600);
@@ -38,12 +39,13 @@ public class C195 extends Application {
         primaryStage.show();
         primaryStage.setResizable(false);
         primaryStage.sizeToScene();
+        rootLayoutController.hideViewMenu();
     }
 
     private void showLoginScreen(VBox rootLayout, Stage primaryStage) throws IOException {
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(C195.class.getResource("View_Controller/Login.fxml"));
-        LoginController controller = new LoginController(rootLayout, primaryStage);
+        LoginController controller = new LoginController(rootLayout, primaryStage, rootLayoutController);
         loader.setController(controller);
 
         AnchorPane login = loader.load();

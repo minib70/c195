@@ -11,7 +11,7 @@
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="600.0" prefWidth="450.0" stylesheets="@material.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane prefHeight="600.0" prefWidth="450.0" stylesheets="@material.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#949494" height="56.0" layoutY="120.0" stroke="#f2f2f200" strokeLineJoin="ROUND" strokeType="OUTSIDE" strokeWidth="0.0" width="450.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.5" />
       <Line endX="225.0" layoutX="225.0" layoutY="148.0" startX="-225.0" />
