@@ -11,6 +11,7 @@ import java.util.ResourceBundle;
 
 public class LoginController implements Initializable {
     private VBox rootLayout;
+    private final String requiredPassword = "test";
     @FXML private TextField textFieldUsername, textFieldPassword;
 
     public LoginController(VBox rootLayout) {
@@ -21,7 +22,7 @@ public class LoginController implements Initializable {
         String username = textFieldUsername.getText();
         String password = textFieldPassword.getText();
 
-        if(password.equals("password")) { // Password is correct
+        if(password.equals(requiredPassword)) { // Password is correct
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Login Successful!");
             alert.setHeaderText("Well done.  You guessed the password!");
