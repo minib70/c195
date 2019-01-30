@@ -10,16 +10,23 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 public class C195 extends Application {
-    private Stage primaryStage;
-    private VBox rootLayout;
-    private RootLayoutController rootLayoutController;
+    public Stage primaryStage;
+    public VBox rootLayout;
+    public RootLayoutController rootLayoutController;
+    public ResourceBundle rb;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
         this.primaryStage = primaryStage;
         this.primaryStage.setTitle("C195 - Appointment Management");
+        // This sets the local for the project
+        Locale.setDefault(new Locale("nl", "NL"));
+        //Locale.setDefault(new Locale("en", "US"));
+        rb = ResourceBundle.getBundle("lang", Locale.getDefault());
         rootLayout = new VBox();
 
         initRootLayout();
@@ -45,7 +52,7 @@ public class C195 extends Application {
     private void showLoginScreen(VBox rootLayout, Stage primaryStage) throws IOException {
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(C195.class.getResource("View_Controller/Login.fxml"));
-        LoginController controller = new LoginController(rootLayout, primaryStage, rootLayoutController);
+        LoginController controller = new LoginController(this);
         loader.setController(controller);
 
         AnchorPane login = loader.load();

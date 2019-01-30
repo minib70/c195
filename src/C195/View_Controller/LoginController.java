@@ -5,6 +5,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Priority;
@@ -16,16 +18,17 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class LoginController implements Initializable {
-    private VBox rootLayout;
-    private Stage primaryStage;
-    private RootLayoutController rootLayoutController;
+    //private VBox rootLayout;
+    //private Stage primaryStage;
+    //private RootLayoutController rootLayoutController;
+    private C195 main;
     private final String requiredPassword = "test";
     @FXML private TextField textFieldUsername, textFieldPassword;
+    @FXML private Label labelUsername, labelPassword, labelInstructions;
+    @FXML private Button buttonLogin;
 
-    public LoginController(VBox rootLayout, Stage primaryStage, RootLayoutController rootLayoutController) {
-        this.rootLayout = rootLayout;
-        this.primaryStage = primaryStage;
-        this.rootLayoutController = rootLayoutController;
+    public LoginController(C195 main) {
+        this.main = main;
     }
 
     public void onEnter() throws IOException { //TODO: Really set up password stuff.
@@ -52,20 +55,24 @@ public class LoginController implements Initializable {
         // Instantiate the controller
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(C195.class.getResource("View_Controller/Appointments.fxml"));
-        AppointmentsController controller = new AppointmentsController(rootLayout);
+        AppointmentsController controller = new AppointmentsController(main.rootLayout);
         loader.setController(controller);
 
         AnchorPane appointments = loader.load();
         // Removes just the login screen from root
-        rootLayout.getChildren().remove(1);
-        rootLayout.getChildren().add(appointments);
-        primaryStage.setHeight(appointments.getPrefHeight());
-        primaryStage.setWidth(appointments.getPrefWidth());
-        rootLayoutController.showViewMenu();
+        main.rootLayout.getChildren().remove(1);
+        main.rootLayout.getChildren().add(appointments);
+        main.primaryStage.setHeight(appointments.getPrefHeight());
+        main.primaryStage.setWidth(appointments.getPrefWidth());
+        main.rootLayoutController.showViewMenu();
     }
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        //rootLayoutController.hideViewMenu();
+        // Set text based on locale
+        labelInstructions.setText(main.rb.getString("instructions"));
+        labelUsername.setText(main.rb.getString("username"));
+        labelPassword.setText(main.rb.getString("password"));
+        buttonLogin.setText(main.rb.getString("login_button"));
     }
 }
