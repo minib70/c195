@@ -7,7 +7,7 @@ import java.sql.SQLException;
 public class Database {
     public static void main(String[] argv) throws ClassNotFoundException {
         Connection conn = null;
-        String driver = "com.mysql.jdbc.Driver";
+        String driver = "com.mysql.cj.jdbc.Driver";
         String db = "U04cre";
         String url = "jdbc:mysql://52.206.157.109/" + db;
         String user = "U04cre";

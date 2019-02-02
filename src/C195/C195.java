@@ -1,5 +1,6 @@
 package C195;
 
+import C195.Util.DB;
 import C195.View_Controller.LoginController;
 import C195.View_Controller.RootLayoutController;
 import javafx.application.Application;
@@ -10,6 +11,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.sql.Connection;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -18,19 +20,27 @@ public class C195 extends Application {
     public VBox rootLayout;
     public RootLayoutController rootLayoutController;
     public ResourceBundle rb;
+    public static Connection dbConnection;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
         this.primaryStage = primaryStage;
         this.primaryStage.setTitle("C195 - Appointment Management");
         // This sets the local for the project
-        Locale.setDefault(new Locale("nl", "NL"));
-        //Locale.setDefault(new Locale("en", "US"));
+        //Locale.setDefault(new Locale("nl", "NL"));
+        Locale.setDefault(new Locale("en", "US"));
         rb = ResourceBundle.getBundle("lang", Locale.getDefault());
         rootLayout = new VBox();
 
         initRootLayout();
         showLoginScreen(rootLayout, primaryStage);
+    }
+
+    public static void main(String[] args) {
+        DB.connectDB();
+        dbConnection = DB.getDbConnection();
+        launch(args);
+        DB.disconnect();
     }
 
     private void initRootLayout() throws IOException {
