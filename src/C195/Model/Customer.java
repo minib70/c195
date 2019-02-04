@@ -6,21 +6,48 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
 public class Customer {
-    private final IntegerProperty customerID;
-    private final StringProperty name;
-    private final StringProperty address;
-    private final StringProperty city;
-    private final StringProperty zip;
-    private final StringProperty phone;
+    private final IntegerProperty customerID, addressID;
+    private final StringProperty customerName;
 
     public Customer() {
         this.customerID = new SimpleIntegerProperty();
-        this.name = new SimpleStringProperty();
-        this.address = new SimpleStringProperty();
-        this.city = new SimpleStringProperty();
-        this.zip = new SimpleStringProperty();
-        this.phone = new SimpleStringProperty();
+        this.addressID = new SimpleIntegerProperty();
+        this.customerName = new SimpleStringProperty();
     }
 
-    //TODO: Setters and getters
+    public int getCustomerID() {
+        return customerID.get();
+    }
+
+    public IntegerProperty customerIDProperty() {
+        return customerID;
+    }
+
+    public void setCustomerID(int customerID) {
+        this.customerID.set(customerID);
+    }
+
+    public int getAddressID() {
+        return addressID.get();
+    }
+
+    public IntegerProperty addressIDProperty() {
+        return addressID;
+    }
+
+    public void setAddressID(int addressID) {
+        this.addressID.set(addressID);
+    }
+
+    public String getCustomerName() {
+        return customerName.get();
+    }
+
+    public StringProperty customerNameProperty() {
+        return customerName;
+    }
+
+    public void setCustomerName(String customerName) {
+        this.customerName.set(customerName);
+    }
 }

@@ -33,7 +33,7 @@ public class LoginController implements Initializable {
         this.main = main;
     }
 
-    public void onEnter() throws IOException { //TODO: Really set up password stuff.
+    public void onEnter() throws IOException {
         boolean usernameIsValid = true;
         boolean passwordIsValid = true;
         String inputUsername = textFieldUsername.getText();
