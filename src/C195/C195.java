@@ -6,10 +6,12 @@ import C195.View_Controller.RootLayoutController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
 import java.util.Locale;
@@ -25,6 +27,8 @@ public class C195 extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         this.primaryStage = primaryStage;
+        // Set application icon
+        this.primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("View_Controller/appicon.png")));
         this.primaryStage.setTitle("C195 - Appointment Management");
         // This sets the local for the project
         //Locale.setDefault(new Locale("nl", "NL"));

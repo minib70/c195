@@ -19,7 +19,7 @@ public class DB {
     public static void connectDB() {
         try {
             Class.forName(JDBC_DRIVER);
-            dbConnection = DriverManager.getConnection("URL" + DBNAME,USERNAME,PASSWORD);
+            dbConnection = DriverManager.getConnection(URL + DBNAME,USERNAME,PASSWORD);
         } catch (SQLException e) {
             System.out.println("SQL Exception: " + e.getMessage());
         } catch (ClassNotFoundException e) {
