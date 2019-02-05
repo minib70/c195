@@ -62,6 +62,7 @@ public class LoginController implements Initializable {
             textFieldPassword.setStyle(null);
         }
 
+        // If both username and password is valid
         if(usernameIsValid && passwordIsValid) {
             User inputUser = new User(inputUsername,inputPassword);
             validUser = tryLogin(inputUser);
@@ -75,27 +76,11 @@ public class LoginController implements Initializable {
                 alert.showAndWait();
                 // Sets current user for the current session
                 main.currentUser = validUser;
-                showAppointments();
+                main.showAppointmentsScreen();
             }
         } else {
             Alerts.warningAlert(errors.toString());
         }
-    }
-
-    private void showAppointments() throws IOException {
-        // Instantiate the controller
-        FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(C195.class.getResource("View_Controller/Appointments.fxml"));
-        AppointmentsController controller = new AppointmentsController(main.rootLayout);
-        loader.setController(controller);
-
-        AnchorPane appointments = loader.load();
-        // Removes just the login screen from root
-        main.rootLayout.getChildren().remove(1);
-        main.rootLayout.getChildren().add(appointments);
-        main.primaryStage.setHeight(appointments.getPrefHeight());
-        main.primaryStage.setWidth(appointments.getPrefWidth());
-        main.rootLayoutController.showViewMenu();
     }
 
     private User tryLogin(User loginAttempt) {

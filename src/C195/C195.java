@@ -2,6 +2,7 @@ package C195;
 
 import C195.Model.User;
 import C195.Util.DB;
+import C195.View_Controller.AppointmentsController;
 import C195.View_Controller.LoginController;
 import C195.View_Controller.RootLayoutController;
 import javafx.application.Application;
@@ -42,7 +43,7 @@ public class C195 extends Application {
         rootLayout = new VBox();
 
         initRootLayout();
-        showLoginScreen(rootLayout, primaryStage);
+        showLoginScreen();
     }
 
     public static void main(String[] args) {
@@ -68,7 +69,7 @@ public class C195 extends Application {
         rootLayoutController.hideViewMenu();
     }
 
-    private void showLoginScreen(VBox rootLayout, Stage primaryStage) throws IOException {
+    private void showLoginScreen() throws IOException {
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(C195.class.getResource("View_Controller/Login.fxml"));
         LoginController controller = new LoginController(this);
@@ -76,5 +77,21 @@ public class C195 extends Application {
 
         AnchorPane login = loader.load();
         rootLayout.getChildren().add(login);
+    }
+
+    public void showAppointmentsScreen() throws  IOException {
+        // Instantiate the controller
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(C195.class.getResource("View_Controller/Appointments.fxml"));
+        AppointmentsController controller = new AppointmentsController(this);
+        loader.setController(controller);
+
+        AnchorPane appointments = loader.load();
+        // Removes just the login screen from root
+        rootLayout.getChildren().remove(1);
+        rootLayout.getChildren().add(appointments);
+        primaryStage.setHeight(appointments.getPrefHeight());
+        primaryStage.setWidth(appointments.getPrefWidth());
+        rootLayoutController.showViewMenu();
     }
 }
