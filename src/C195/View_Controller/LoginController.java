@@ -73,6 +73,8 @@ public class LoginController implements Initializable {
                 alert.setHeaderText("Well done.  You guessed the password!");
                 alert.setContentText("Password really is a good password.");
                 alert.showAndWait();
+                // Sets current user for the current session
+                main.currentUser = validUser;
                 showAppointments();
             }
         } else {
@@ -80,7 +82,7 @@ public class LoginController implements Initializable {
         }
     }
 
-    public void showAppointments() throws IOException {
+    private void showAppointments() throws IOException {
         // Instantiate the controller
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(C195.class.getResource("View_Controller/Appointments.fxml"));

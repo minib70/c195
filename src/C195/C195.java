@@ -1,5 +1,6 @@
 package C195;
 
+import C195.Model.User;
 import C195.Util.DB;
 import C195.View_Controller.LoginController;
 import C195.View_Controller.RootLayoutController;
@@ -23,9 +24,13 @@ public class C195 extends Application {
     public RootLayoutController rootLayoutController;
     public ResourceBundle rb;
     public static Connection dbConnection;
+    public User currentUser;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+        // Initialize user object
+        this.currentUser = new User();
+
         this.primaryStage = primaryStage;
         // Set application icon
         this.primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("View_Controller/appicon.png")));

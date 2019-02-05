@@ -20,7 +20,7 @@ public class Validation {
         StringBuilder errors = new StringBuilder();
         // Ensure name is not null
         if(password.isEmpty()) {
-            errors.append("Name must contain at least 1 character.");
+            errors.append("Password must contain at least 1 character.");
         }
         return errors.toString();
     }
