@@ -27,7 +27,7 @@ public class AppointmentsController implements Initializable {
     }
 
     private void loadAppointments() {
-        appointments = new FXCollections.observableArrayList();
+        appointments = FXCollections.observableArrayList();
 
         try {
             PreparedStatement stmt = C195.dbConnection.prepareStatement(
