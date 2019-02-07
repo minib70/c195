@@ -61,7 +61,7 @@ public class C195 extends Application {
         loader.setController(rootLayoutController);
         rootLayout = loader.load();
 
-        Scene scene = new Scene(rootLayout, 450, 600);
+        Scene scene = new Scene(rootLayout);
         primaryStage.setScene(scene);
         primaryStage.show();
         primaryStage.setResizable(false);
@@ -69,13 +69,19 @@ public class C195 extends Application {
         rootLayoutController.hideViewMenu();
     }
 
-    private void showLoginScreen() throws IOException {
+    public void showLoginScreen() throws IOException {
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(C195.class.getResource("View_Controller/Login.fxml"));
         LoginController controller = new LoginController(this);
         loader.setController(controller);
 
         AnchorPane login = loader.load();
+        primaryStage.setHeight(login.getPrefHeight());
+        primaryStage.setWidth(login.getPrefWidth());
+        // For logging out this clears the layout and re-adds only the login screen.
+        if(rootLayout.getChildren().size() > 1) {
+            rootLayout.getChildren().remove(1);
+        }
         rootLayout.getChildren().add(login);
     }
 

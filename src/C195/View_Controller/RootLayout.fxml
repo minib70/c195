@@ -11,7 +11,8 @@
         <menus>
           <Menu mnemonicParsing="false" text="File">
             <items>
-              <MenuItem mnemonicParsing="false" onAction="#handleClose" text="Close" />
+              <MenuItem fx:id="menuItemLogout" disable="true" mnemonicParsing="false" onAction="#logoutUser" text="Logout" />
+                  <MenuItem mnemonicParsing="false" onAction="#handleClose" text="Close" />
             </items>
           </Menu>
             <Menu fx:id="menuView" mnemonicParsing="false" text="View">

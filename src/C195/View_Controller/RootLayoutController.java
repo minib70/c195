@@ -8,13 +8,15 @@ import javafx.scene.control.MenuItem;
 import javafx.event.ActionEvent;
 import javafx.scene.layout.VBox;
 
+import java.io.IOException;
+
 public class RootLayoutController {
     private C195 main;
 
     public RootLayoutController(C195 main) {
         this.main = main;
     }
-    @FXML public MenuItem fileCloseMenuItem;
+    @FXML public MenuItem fileCloseMenuItem, menuItemLogout;
     @FXML private Menu menuView, menuLoggedInUser;
     // Handle fileCloseMenuClick
     @FXML public void handleClose(ActionEvent event) {
@@ -42,8 +44,17 @@ public class RootLayoutController {
         alert.showAndWait();
     }
 
+    public void logoutUser() throws IOException {
+        if(main.currentUser != null) {
+            // Set current user to Null
+            main.currentUser = null;
+            main.showLoginScreen();
+        }
+    }
+
     @FXML public void setLoggedInUser(String loggedInUser) {
-        menuLoggedInUser.setText("Logged in User - " + loggedInUser);
+        menuLoggedInUser.setText("Logged in User: " + loggedInUser);
+        menuItemLogout.setDisable(false);
     }
 
 }
