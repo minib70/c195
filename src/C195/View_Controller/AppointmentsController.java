@@ -8,9 +8,7 @@ import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 import java.net.URL;
@@ -30,6 +28,8 @@ public class AppointmentsController implements Initializable {
     @FXML private TableColumn<Appointment, String> columnMonthlyLocation;
     @FXML private TableColumn<Appointment, String> columnMonthlyStart;
     @FXML private TableColumn<Appointment, String> columnMonthlyEnd;
+    @FXML private ToggleGroup toggleGroupAppointmentView;
+    @FXML private RadioButton radioAllAppointments, radioMonthlyAppointments, radioWeeklyAppointments;
 
     public AppointmentsController(C195 main) {
         this.main = main;
@@ -91,6 +91,22 @@ public class AppointmentsController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         //TODO: Potentially translate this.
         labelTitle.setText("Appointments - " + main.currentUser.getUsername());
+
+        // Default to All appointments
+        radioAllAppointments.fire();
+
+        // Listener for radio buttons
+        toggleGroupAppointmentView.selectedToggleProperty().addListener((observable, oldValue, newValue) -> {
+            if(toggleGroupAppointmentView.selectedToggleProperty() != null) {
+                if(radioAllAppointments.isSelected()) {
+                    // TODO: Write action
+                } else if(radioMonthlyAppointments.isSelected()) {
+                    // TODO: Write action
+                } else if(radioWeeklyAppointments.isSelected()) {
+                    //TODO: Write action.
+                }
+            }
+        });
 
         // Populate Appointments
         loadAppointments();
