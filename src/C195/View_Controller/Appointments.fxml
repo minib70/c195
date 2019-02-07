@@ -38,14 +38,14 @@
             </HBox>
             <AnchorPane prefHeight="628.0" prefWidth="1000.0">
                <children>
-                  <TableView fx:id="tableViewMonthly" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                  <TableView fx:id="tableViewAppointments" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                     <columns>
-                        <TableColumn fx:id="columnMonthlyTitle" prefWidth="94.0" text="Title" />
-                      <TableColumn fx:id="columnMonthlyDescription" prefWidth="94.0" text="Description" />
-                      <TableColumn fx:id="columnMonthlyContact" text="Contact" />
-                        <TableColumn fx:id="columnMonthlyLocation" prefWidth="378.0" text="Location" />
-                        <TableColumn fx:id="columnMonthlyStart" prefWidth="185.0" text="Start" />
-                        <TableColumn fx:id="columnMonthlyEnd" prefWidth="233.0" text="End" />
+                        <TableColumn fx:id="columnAppointmentsTitle" prefWidth="94.0" text="Title" />
+                      <TableColumn fx:id="columnAppointmentsDescription" prefWidth="94.0" text="Description" />
+                      <TableColumn fx:id="columnAppointmentsContact" text="Contact" />
+                        <TableColumn fx:id="columnAppointmentsLocation" prefWidth="378.0" text="Location" />
+                        <TableColumn fx:id="columnAppointmentsStart" prefWidth="185.0" text="Start" />
+                        <TableColumn fx:id="columnAppointmentsEnd" prefWidth="233.0" text="End" />
                     </columns>
                   </TableView>
                </children>

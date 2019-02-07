@@ -21,13 +21,13 @@ public class AppointmentsController implements Initializable {
     private C195 main;
     private ObservableList<Appointment> appointments;
     @FXML private Label labelTitle;
-    @FXML private TableView<Appointment> tableViewMonthly;
-    @FXML private TableColumn<Appointment, String> columnMonthlyTitle;
-    @FXML private TableColumn<Appointment, String> columnMonthlyDescription;
-    @FXML private TableColumn<Appointment, String> columnMonthlyContact;
-    @FXML private TableColumn<Appointment, String> columnMonthlyLocation;
-    @FXML private TableColumn<Appointment, String> columnMonthlyStart;
-    @FXML private TableColumn<Appointment, String> columnMonthlyEnd;
+    @FXML private TableView<Appointment> tableViewAppointments;
+    @FXML private TableColumn<Appointment, String> columnAppointmentsTitle;
+    @FXML private TableColumn<Appointment, String> columnAppointmentsDescription;
+    @FXML private TableColumn<Appointment, String> columnAppointmentsContact;
+    @FXML private TableColumn<Appointment, String> columnAppointmentsLocation;
+    @FXML private TableColumn<Appointment, String> columnAppointmentsStart;
+    @FXML private TableColumn<Appointment, String> columnAppointmentsEnd;
     @FXML private ToggleGroup toggleGroupAppointmentView;
     @FXML private RadioButton radioAllAppointments, radioMonthlyAppointments, radioWeeklyAppointments;
 
@@ -36,7 +36,7 @@ public class AppointmentsController implements Initializable {
         this.appointments = FXCollections.observableArrayList();
     }
 
-    private void showMonthlyApptData(ObservableList<Appointment> appointments) {
+    private void showApptData(ObservableList<Appointment> appointments) {
         FilteredList<Appointment> filteredAppointments = new FilteredList<>(appointments, p -> true);
         //todo: add search?
 
@@ -44,15 +44,15 @@ public class AppointmentsController implements Initializable {
         SortedList<Appointment> sortedAppointments = new SortedList<>(filteredAppointments);
 
         // Bind sorted list to TableVIew
-        sortedAppointments.comparatorProperty().bind(tableViewMonthly.comparatorProperty());
-        columnMonthlyTitle.setCellValueFactory(new PropertyValueFactory<>("title"));
-        columnMonthlyDescription.setCellValueFactory(new PropertyValueFactory<>("description"));
-        columnMonthlyContact.setCellValueFactory(new PropertyValueFactory<>("contact"));
-        columnMonthlyLocation.setCellValueFactory(new PropertyValueFactory<>("location"));
-        columnMonthlyStart.setCellValueFactory(new PropertyValueFactory<>("start"));
-        columnMonthlyEnd.setCellValueFactory(new PropertyValueFactory<>("end"));
-        tableViewMonthly.setItems(sortedAppointments);
-        tableViewMonthly.refresh();
+        sortedAppointments.comparatorProperty().bind(tableViewAppointments.comparatorProperty());
+        columnAppointmentsTitle.setCellValueFactory(new PropertyValueFactory<>("title"));
+        columnAppointmentsDescription.setCellValueFactory(new PropertyValueFactory<>("description"));
+        columnAppointmentsContact.setCellValueFactory(new PropertyValueFactory<>("contact"));
+        columnAppointmentsLocation.setCellValueFactory(new PropertyValueFactory<>("location"));
+        columnAppointmentsStart.setCellValueFactory(new PropertyValueFactory<>("start"));
+        columnAppointmentsEnd.setCellValueFactory(new PropertyValueFactory<>("end"));
+        tableViewAppointments.setItems(sortedAppointments);
+        tableViewAppointments.refresh();
     }
 
     private void loadAppointments() {
@@ -79,7 +79,7 @@ public class AppointmentsController implements Initializable {
                 appt.setEnd(rs.getString("appointment.end"));
                 appointments.add(appt);
             }
-            showMonthlyApptData(appointments);
+            showApptData(appointments);
 
         } catch(SQLException e){
             System.out.println("Issue with SQL");
