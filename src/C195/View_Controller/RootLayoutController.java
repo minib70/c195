@@ -9,14 +9,13 @@ import javafx.event.ActionEvent;
 import javafx.scene.layout.VBox;
 
 public class RootLayoutController {
-    private C195 c195; // TODO: May not need this
+    private C195 main;
 
-    public RootLayoutController(C195 c195) {
-        this.c195 = c195;
+    public RootLayoutController(C195 main) {
+        this.main = main;
     }
-
     @FXML public MenuItem fileCloseMenuItem;
-    @FXML private Menu menuView;
+    @FXML private Menu menuView, menuLoggedInUser;
     // Handle fileCloseMenuClick
     @FXML public void handleClose(ActionEvent event) {
         System.exit(0);
@@ -41,6 +40,10 @@ public class RootLayoutController {
 
         // Show alert
         alert.showAndWait();
+    }
+
+    @FXML public void setLoggedInUser(String loggedInUser) {
+        menuLoggedInUser.setText("Logged in User - " + loggedInUser);
     }
 
 }

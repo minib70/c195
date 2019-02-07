@@ -90,7 +90,7 @@ public class AppointmentsController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         //TODO: Potentially translate this.
-        labelTitle.setText("Appointments - " + main.currentUser.getUsername());
+        labelTitle.setText("Appointments");
 
         // Default to All appointments
         radioAllAppointments.fire();

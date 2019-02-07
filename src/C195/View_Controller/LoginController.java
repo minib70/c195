@@ -76,6 +76,7 @@ public class LoginController implements Initializable {
                 alert.showAndWait();
                 // Sets current user for the current session
                 main.currentUser = validUser;
+                main.rootLayoutController.setLoggedInUser(validUser.getUsername());
                 main.showAppointmentsScreen();
             }
         } else {

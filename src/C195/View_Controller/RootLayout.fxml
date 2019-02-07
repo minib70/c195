@@ -25,6 +25,7 @@
               <MenuItem mnemonicParsing="false" onAction="#handleAbout" text="About" />
             </items>
           </Menu>
+            <Menu fx:id="menuLoggedInUser" disable="true" mnemonicParsing="false" />
         </menus>
       </MenuBar>
    </children>
