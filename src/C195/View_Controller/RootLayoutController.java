@@ -63,28 +63,26 @@ public class RootLayoutController {
             // Address table
             for(int i = 0; i < NUM_DUMMY_DATA; i++) {
                 // Address
-                stmt = C195.dbConnection.prepareStatement("INSERT INTO `address` VALUES (?,'123 Main','',?,CONCAT('1111',?),'555-1212','2019-02-20 16:16:23','test','2019-01-06 16:16:38','test')");
+                stmt = C195.dbConnection.prepareStatement("INSERT INTO `address` (address, address2, cityId, postalCode, phone, createDate, createdBy, lastUpdate, lastUpdateBy) VALUES ('123 Main','',?,CONCAT('1111',?),'555-1212','2019-02-20 16:16:23','test','2019-01-06 16:16:38','test')");
                 stmt.setInt(1, i);
                 stmt.setInt(2, i);
-                stmt.setInt(3, i);
                 stmt.execute();
 
                 // Appointment
-                stmt = C195.dbConnection.prepareStatement("INSERT INTO `appointment` VALUES (?,?,CONCAT('Appointment Title',?),CONCAT('Appointment Description',?),'location','contact','url','2019-01-10 16:00:00','2019-01-10 17:00:00','2019-01-06 16:23:08','test','2019-01-06 16:27:17', 'test')");
+                stmt = C195.dbConnection.prepareStatement("INSERT INTO `appointment` (customerId, title, description, location, contact, url, start, end, createDate, createdBy, lastUpdate,lastUpdateBy) VALUES (?,CONCAT('Appointment Title',?),CONCAT('Appointment Description',?),'location','contact','url','2019-01-10 16:00:00','2019-01-10 17:00:00','2019-01-06 16:23:08','test','2019-01-06 16:27:17', 'test')");
                 stmt.setInt(1, i);
                 stmt.setInt(2, 1);
                 stmt.setInt(3, i);
-                stmt.setInt(4, i);
                 stmt.execute();
             }
             // Customers
-            stmt = C195.dbConnection.prepareStatement("INSERT INTO `customer` VALUES (1,'John Doe',1,1,'2019-01-06 16:19:19','test','2019-01-06 16:19:19','dummyData'),(2,'Jane Doe',2,1,'0000-00-00 00:00:00','test','0000-00-00 00:00:00','dummyData'),(3,'Sally Test',3,1,'0000-00-00 00:00:00','test','0000-00-00 00:00:00','dummyData');");
+            stmt = C195.dbConnection.prepareStatement("INSERT INTO `customer` (customerName, addressId, active, createDate, createdBy, lastUpdate, lastUpdateBy) VALUES ('John Doe',1,1,'2019-01-06 16:19:19','test','2019-01-06 16:19:19','dummyData'),(2,'Jane Doe',2,1,'0000-00-00 00:00:00','test','0000-00-00 00:00:00','dummyData'),(3,'Sally Test',3,1,'0000-00-00 00:00:00','test','0000-00-00 00:00:00','dummyData');");
             stmt.execute();
 
             // Users
-            stmt = C195.dbConnection.prepareStatement("INSERT INTO `user` VALUES (1,'test','test',1,'test','2019-01-06 16:00:37','2019-01-06 16:00:37','dummyData');");
+            stmt = C195.dbConnection.prepareStatement("INSERT INTO `user` (userName, password, active, createBy, createDate, lastUpdate, lastUpdatedBy) VALUES ('test','test',1,'test','2019-01-06 16:00:37','2019-01-06 16:00:37','dummyData');");
             stmt.execute();
-            stmt = C195.dbConnection.prepareStatement("INSERT INTO `user` VALUES (2,'taylor','tayloriscool',1,'test','2019-01-06 16:00:37','2019-01-06 16:00:37','dummyData');");
+            stmt = C195.dbConnection.prepareStatement("INSERT INTO `user` (userName, password, active, createBy, createDate, lastUpdate, lastUpdatedBy) VALUES ('taylor','tayloriscool',1,'test','2019-01-06 16:00:37','2019-01-06 16:00:37','dummyData');");
             stmt.execute();
 
         } catch (SQLException e) {
