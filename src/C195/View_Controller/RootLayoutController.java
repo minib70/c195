@@ -9,6 +9,7 @@ import javafx.event.ActionEvent;
 import javafx.scene.layout.VBox;
 
 import java.io.IOException;
+import java.sql.*;
 
 public class RootLayoutController {
     private C195 main;
@@ -49,6 +50,37 @@ public class RootLayoutController {
             // Set current user to Null
             main.currentUser = null;
             main.showLoginScreen();
+        }
+    }
+
+    @FXML public void loadDummyData() {
+        System.out.println("Loading dummy data.");
+    }
+
+    @FXML public void clearDBData() {
+        System.out.println("Clearing db data.");
+        clearDB();
+    }
+
+    public static void clearDB() {
+        try {
+            Statement stmt = C195.dbConnection.createStatement();
+            stmt.execute(
+                    "SET foreign_key_checks=0;\n"
+                            + "TRUNCATE address;\n"
+                            + "TRUNCATE appointment;\n"
+                            + "TRUNCATE city;\n"
+                            + "TRUNCATE country;\n"
+                            + "TRUNCATE customer;\n"
+                            + "TRUNCATE incrementtypes;\n"
+                            + "TRUNCATE reminder;\n"
+                            + "TRUNCATE user;\n"
+                            + "Set foreign_key_checks=1;"
+            );
+
+        } catch(SQLException e) {
+            System.out.println("Issue with SQL");
+            e.printStackTrace();
         }
     }
 
