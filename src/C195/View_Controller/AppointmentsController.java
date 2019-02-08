@@ -11,6 +11,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 
+import java.io.IOException;
 import java.net.URL;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -20,7 +21,7 @@ import java.util.ResourceBundle;
 public class AppointmentsController implements Initializable {
     private C195 main;
     private ObservableList<Appointment> appointments;
-    @FXML private Label labelTitle;
+    @FXML private Label labelAppointmentTitle;
     @FXML private TableView<Appointment> tableViewAppointments;
     @FXML private TableColumn<Appointment, String> columnAppointmentsTitle;
     @FXML private TableColumn<Appointment, String> columnAppointmentsDescription;
@@ -60,10 +61,8 @@ public class AppointmentsController implements Initializable {
             PreparedStatement stmt = C195.dbConnection.prepareStatement(
                     "SELECT appointment.appointmentId, appointment.customerId, appointment.title, "
                     + "appointment.description, appointment.start, appointment.end, appointment.createdBy, "
-                    + "appointment.location, appointment.contact, customer.customerName, customer.customerId "
-                    + "FROM appointment, customer "
-                    + "WHERE appointment.customerId = customer.customerId "
-                    + "ORDER BY start"
+                    + "appointment.location, appointment.contact "
+                    + "FROM appointment"
             );
             ResultSet rs = stmt.executeQuery();
 
@@ -87,10 +86,14 @@ public class AppointmentsController implements Initializable {
         }
     }
 
+    @FXML private void customersButtonClicked() throws IOException {
+
+    }
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         //TODO: Potentially translate this.
-        labelTitle.setText("Appointments");
+        labelAppointmentTitle.setText(main.rb.getString("appointment_title"));
 
         // Default to All appointments
         radioAllAppointments.fire();

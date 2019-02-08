@@ -63,7 +63,7 @@ public class RootLayoutController {
             // Address table
             for(int i = 0; i < NUM_DUMMY_DATA; i++) {
                 // Address
-                stmt = C195.dbConnection.prepareStatement("INSERT INTO `address` VALUES (?,'123 Main','',?,'1111'+?,'555-1212','2019-02-20 16:16:23','test','2019-01-06 16:16:38','test')");
+                stmt = C195.dbConnection.prepareStatement("INSERT INTO `address` VALUES (?,'123 Main','',?,CONCAT('1111',?),'555-1212','2019-02-20 16:16:23','test','2019-01-06 16:16:38','test')");
                 stmt.setInt(1, i);
                 stmt.setInt(2, i);
                 stmt.setInt(3, i);
@@ -78,15 +78,15 @@ public class RootLayoutController {
                 stmt.execute();
             }
             // Customers
-            stmt = C195.dbConnection.prepareStatement("INSERT INTO `customer` VALUES (1,'John Doe',1,1,'2019-01-06 16:19:19','test','2019-01-06 16:19:19','test'),(2,'Jane Doe',2,1,'0000-00-00 00:00:00','test','0000-00-00 00:00:00','test'),(3,'Sally Test',3,1,'0000-00-00 00:00:00','test','0000-00-00 00:00:00','test');");
+            stmt = C195.dbConnection.prepareStatement("INSERT INTO `customer` VALUES (1,'John Doe',1,1,'2019-01-06 16:19:19','test','2019-01-06 16:19:19','dummyData'),(2,'Jane Doe',2,1,'0000-00-00 00:00:00','test','0000-00-00 00:00:00','dummyData'),(3,'Sally Test',3,1,'0000-00-00 00:00:00','test','0000-00-00 00:00:00','dummyData');");
             stmt.execute();
 
             // Users
-            stmt = C195.dbConnection.prepareStatement("INSERT INTO `user` VALUES (1,'test','test',1,'test','2019-01-06 16:00:37','2019-01-06 16:00:37','0000-00-00 00:00:00');");
+            stmt = C195.dbConnection.prepareStatement("INSERT INTO `user` VALUES (1,'test','test',1,'test','2019-01-06 16:00:37','2019-01-06 16:00:37','dummyData');");
             stmt.execute();
-            stmt = C195.dbConnection.prepareStatement("INSERT INTO `user` VALUES (2,'taylor','tayloriscool',1,'test','2019-01-06 16:00:37','2019-01-06 16:00:37','0000-00-00 00:00:00');");
+            stmt = C195.dbConnection.prepareStatement("INSERT INTO `user` VALUES (2,'taylor','tayloriscool',1,'test','2019-01-06 16:00:37','2019-01-06 16:00:37','dummyData');");
             stmt.execute();
-            
+
         } catch (SQLException e) {
             System.out.println("Issue with SQL");
             e.printStackTrace();
@@ -99,7 +99,7 @@ public class RootLayoutController {
         clearDB();
     }
 
-    public static void clearDB() {
+    private static void clearDB() {
         try {
             Statement stmt = C195.dbConnection.createStatement();
             stmt.execute("TRUNCATE address");
@@ -118,8 +118,7 @@ public class RootLayoutController {
     }
 
     @FXML public void setLoggedInUser(String loggedInUser) {
-        menuLoggedInUser.setText("Logged in User: " + loggedInUser);
+        menuLoggedInUser.setText(main.rb.getString("logged_in_user") + " " + loggedInUser);
         menuItemLogout.setDisable(false);
     }
-
 }
