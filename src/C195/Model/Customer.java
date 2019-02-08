@@ -7,12 +7,77 @@ import javafx.beans.property.StringProperty;
 
 public class Customer {
     private final IntegerProperty customerID, addressID;
-    private final StringProperty customerName;
+    private final StringProperty name, address, address2, city, postalCode, phone;
+
+    public String getAddress() {
+        return address.get();
+    }
+
+    public StringProperty addressProperty() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address.set(address);
+    }
+
+    public String getAddress2() {
+        return address2.get();
+    }
+
+    public StringProperty address2Property() {
+        return address2;
+    }
+
+    public void setAddress2(String address2) {
+        this.address2.set(address2);
+    }
+
+    public String getCity() {
+        return city.get();
+    }
+
+    public StringProperty cityProperty() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city.set(city);
+    }
+
+    public String getPostalCode() {
+        return postalCode.get();
+    }
+
+    public StringProperty postalCodeProperty() {
+        return postalCode;
+    }
+
+    public void setPostalCode(String postalCode) {
+        this.postalCode.set(postalCode);
+    }
+
+    public String getPhone() {
+        return phone.get();
+    }
+
+    public StringProperty phoneProperty() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone.set(phone);
+    }
 
     public Customer() {
         this.customerID = new SimpleIntegerProperty();
         this.addressID = new SimpleIntegerProperty();
-        this.customerName = new SimpleStringProperty();
+        this.name = new SimpleStringProperty();
+        this.address = new SimpleStringProperty();
+        this.address2 = new SimpleStringProperty();
+        this.city = new SimpleStringProperty();
+        this.postalCode = new SimpleStringProperty();
+        this.phone = new SimpleStringProperty();
     }
 
     public int getCustomerID() {
@@ -39,15 +104,15 @@ public class Customer {
         this.addressID.set(addressID);
     }
 
-    public String getCustomerName() {
-        return customerName.get();
+    public String getName() {
+        return name.get();
     }
 
-    public StringProperty customerNameProperty() {
-        return customerName;
+    public StringProperty nameProperty() {
+        return name;
     }
 
-    public void setCustomerName(String customerName) {
-        this.customerName.set(customerName);
+    public void setName(String name) {
+        this.name.set(name);
     }
 }

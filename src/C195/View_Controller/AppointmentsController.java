@@ -37,25 +37,6 @@ public class AppointmentsController implements Initializable {
         this.appointments = FXCollections.observableArrayList();
     }
 
-    private void showApptData(ObservableList<Appointment> appointments) {
-        FilteredList<Appointment> filteredAppointments = new FilteredList<>(appointments, p -> true);
-        //todo: add search?
-
-        // Wrap filtered list in sorted list
-        SortedList<Appointment> sortedAppointments = new SortedList<>(filteredAppointments);
-
-        // Bind sorted list to TableVIew
-        sortedAppointments.comparatorProperty().bind(tableViewAppointments.comparatorProperty());
-        columnAppointmentsTitle.setCellValueFactory(new PropertyValueFactory<>("title"));
-        columnAppointmentsDescription.setCellValueFactory(new PropertyValueFactory<>("description"));
-        columnAppointmentsContact.setCellValueFactory(new PropertyValueFactory<>("contact"));
-        columnAppointmentsLocation.setCellValueFactory(new PropertyValueFactory<>("location"));
-        columnAppointmentsStart.setCellValueFactory(new PropertyValueFactory<>("start"));
-        columnAppointmentsEnd.setCellValueFactory(new PropertyValueFactory<>("end"));
-        tableViewAppointments.setItems(sortedAppointments);
-        tableViewAppointments.refresh();
-    }
-
     private void loadAppointments() {
         try {
             PreparedStatement stmt = C195.dbConnection.prepareStatement(
@@ -78,7 +59,7 @@ public class AppointmentsController implements Initializable {
                 appt.setEnd(rs.getString("appointment.end"));
                 appointments.add(appt);
             }
-            showApptData(appointments);
+            showApptData();
 
         } catch(SQLException e){
             System.out.println("Issue with SQL");
@@ -86,14 +67,41 @@ public class AppointmentsController implements Initializable {
         }
     }
 
+    private void showApptData() {
+        FilteredList<Appointment> filteredAppointments = new FilteredList<>(appointments, p -> true);
+        //todo: add search?
+
+        // Wrap filtered list in sorted list
+        SortedList<Appointment> sortedAppointments = new SortedList<>(filteredAppointments);
+
+        // Bind sorted list to TableVIew
+        sortedAppointments.comparatorProperty().bind(tableViewAppointments.comparatorProperty());
+        columnAppointmentsTitle.setCellValueFactory(new PropertyValueFactory<>("title"));
+        columnAppointmentsDescription.setCellValueFactory(new PropertyValueFactory<>("description"));
+        columnAppointmentsContact.setCellValueFactory(new PropertyValueFactory<>("contact"));
+        columnAppointmentsLocation.setCellValueFactory(new PropertyValueFactory<>("location"));
+        columnAppointmentsStart.setCellValueFactory(new PropertyValueFactory<>("start"));
+        columnAppointmentsEnd.setCellValueFactory(new PropertyValueFactory<>("end"));
+        tableViewAppointments.setItems(appointments);
+        tableViewAppointments.refresh();
+//        if(tableViewAppointments.getItems().size() > 0) {
+//            tableViewAppointments.getSelectionModel().clearAndSelect(0);
+//        }
+    }
+
     @FXML private void customersButtonClicked() throws IOException {
         //TODO: Make sure this is fully implemented
         main.showCustomersScreen();
     }
 
+    @FXML private void buttonRefreshDataClicked() {
+        // Clear existing data
+        appointments.clear();
+        loadAppointments();
+    }
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        //TODO: Potentially translate this.
         labelAppointmentTitle.setText(main.rb.getString("appointment_title"));
 
         // Default to All appointments
@@ -111,6 +119,11 @@ public class AppointmentsController implements Initializable {
                 }
             }
         });
+
+        // Set tableView Settings
+        tableViewAppointments.setEditable(true);
+        tableViewAppointments.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        tableViewAppointments.setPlaceholder(new Label("No appointments found."));
 
         // Populate Appointments
         loadAppointments();

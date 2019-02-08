@@ -31,10 +31,15 @@
                   </RadioButton>
                   <RadioButton fx:id="radioMonthlyAppointments" mnemonicParsing="false" text="Monthly" toggleGroup="$toggleGroupAppointmentView" />
                   <RadioButton fx:id="radioWeeklyAppointments" mnemonicParsing="false" text="Weekly" toggleGroup="$toggleGroupAppointmentView" />
+                  <Region prefHeight="40.0" prefWidth="580.0" />
+                  <Button fx:id="buttonRefreshData" mnemonicParsing="false" onAction="#buttonRefreshDataClicked" prefHeight="40.0" prefWidth="98.0" text="Refresh" />
                </children>
                <padding>
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                </padding>
+               <VBox.margin>
+                  <Insets right="10.0" />
+               </VBox.margin>
             </HBox>
             <AnchorPane prefHeight="628.0" prefWidth="1000.0">
                <children>
