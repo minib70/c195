@@ -83,6 +83,7 @@ public class C195 extends Application {
             rootLayout.getChildren().remove(1);
         }
         rootLayout.getChildren().add(login);
+        //TODO: disable load and clear database until user is logged in.
     }
 
     public void showAppointmentsScreen() throws  IOException {

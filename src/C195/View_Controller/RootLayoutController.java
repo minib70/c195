@@ -13,6 +13,7 @@ import java.sql.*;
 
 public class RootLayoutController {
     private C195 main;
+    private final int NUM_DUMMY_DATA = 5;
 
     public RootLayoutController(C195 main) {
         this.main = main;
@@ -55,9 +56,45 @@ public class RootLayoutController {
 
     @FXML public void loadDummyData() {
         System.out.println("Loading dummy data.");
+
+        try {
+            clearDB();
+            PreparedStatement stmt;
+            // Address table
+            for(int i = 0; i < NUM_DUMMY_DATA; i++) {
+                // Address
+                stmt = C195.dbConnection.prepareStatement("INSERT INTO `address` VALUES (?,'123 Main','',?,'1111'+?,'555-1212','2019-02-20 16:16:23','test','2019-01-06 16:16:38','test')");
+                stmt.setInt(1, i);
+                stmt.setInt(2, i);
+                stmt.setInt(3, i);
+                stmt.execute();
+
+                // Appointment
+                stmt = C195.dbConnection.prepareStatement("INSERT INTO `appointment` VALUES (?,?,CONCAT('Appointment Title',?),CONCAT('Appointment Description',?),'location','contact','url','2019-01-10 16:00:00','2019-01-10 17:00:00','2019-01-06 16:23:08','test','2019-01-06 16:27:17', 'test')");
+                stmt.setInt(1, i);
+                stmt.setInt(2, 1);
+                stmt.setInt(3, i);
+                stmt.setInt(4, i);
+                stmt.execute();
+            }
+            // Customers
+            stmt = C195.dbConnection.prepareStatement("INSERT INTO `customer` VALUES (1,'John Doe',1,1,'2019-01-06 16:19:19','test','2019-01-06 16:19:19','test'),(2,'Jane Doe',2,1,'0000-00-00 00:00:00','test','0000-00-00 00:00:00','test'),(3,'Sally Test',3,1,'0000-00-00 00:00:00','test','0000-00-00 00:00:00','test');");
+            stmt.execute();
+
+            // Users
+            stmt = C195.dbConnection.prepareStatement("INSERT INTO `user` VALUES (1,'test','test',1,'test','2019-01-06 16:00:37','2019-01-06 16:00:37','0000-00-00 00:00:00');");
+            stmt.execute();
+            stmt = C195.dbConnection.prepareStatement("INSERT INTO `user` VALUES (2,'taylor','tayloriscool',1,'test','2019-01-06 16:00:37','2019-01-06 16:00:37','0000-00-00 00:00:00');");
+            stmt.execute();
+            
+        } catch (SQLException e) {
+            System.out.println("Issue with SQL");
+            e.printStackTrace();
+        }
     }
 
     @FXML public void clearDBData() {
+        //TODO: can probably combine this with the below method
         System.out.println("Clearing db data.");
         clearDB();
     }
@@ -65,18 +102,14 @@ public class RootLayoutController {
     public static void clearDB() {
         try {
             Statement stmt = C195.dbConnection.createStatement();
-            stmt.execute(
-                    "SET foreign_key_checks=0;\n"
-                            + "TRUNCATE address;\n"
-                            + "TRUNCATE appointment;\n"
-                            + "TRUNCATE city;\n"
-                            + "TRUNCATE country;\n"
-                            + "TRUNCATE customer;\n"
-                            + "TRUNCATE incrementtypes;\n"
-                            + "TRUNCATE reminder;\n"
-                            + "TRUNCATE user;\n"
-                            + "Set foreign_key_checks=1;"
-            );
+            stmt.execute("TRUNCATE address");
+            stmt.execute("TRUNCATE appointment");
+            stmt.execute("TRUNCATE city");
+            stmt.execute("TRUNCATE country");
+            stmt.execute("TRUNCATE customer");
+            stmt.execute("TRUNCATE incrementtypes");
+            stmt.execute("TRUNCATE reminder");
+            stmt.execute("TRUNCATE user");
 
         } catch(SQLException e) {
             System.out.println("Issue with SQL");
