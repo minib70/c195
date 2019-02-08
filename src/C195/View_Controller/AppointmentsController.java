@@ -87,7 +87,8 @@ public class AppointmentsController implements Initializable {
     }
 
     @FXML private void customersButtonClicked() throws IOException {
-
+        //TODO: Make sure this is fully implemented
+        main.showCustomersScreen();
     }
 
     @Override

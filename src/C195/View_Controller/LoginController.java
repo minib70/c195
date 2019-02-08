@@ -72,7 +72,7 @@ public class LoginController implements Initializable {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Login Successful!");
                 alert.setHeaderText("Well done.  You guessed the password!");
-                alert.setContentText("Password really is a good password.");
+                alert.setContentText(validUser.getPassword() + " is a good password.");
                 alert.showAndWait();
                 // Sets current user for the current session
                 main.currentUser = validUser;

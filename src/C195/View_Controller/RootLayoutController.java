@@ -56,8 +56,8 @@ public class RootLayoutController {
 
     @FXML public void loadDummyData() {
         System.out.println("Loading dummy data.");
-
         try {
+            String[] customers = {"John Doe", "Jane Doe", "Sally Sutherton", "Taylor Coolguy", "Jimbo Jones"};
             clearDB();
             PreparedStatement stmt;
             // Address table
@@ -74,16 +74,27 @@ public class RootLayoutController {
                 stmt.setInt(2, 1);
                 stmt.setInt(3, i);
                 stmt.execute();
+
+                // Customer
+                if(i <= customers.length) {
+                    stmt = C195.dbConnection.prepareStatement("INSERT INTO `customer` (customerName, addressId, active, createDate, createdBy, lastUpdate, lastUpdateBy) VALUES (?, ?, 1, ?, 'dummyData', ?, 'dummyData')");
+                    stmt.setString(1, customers[i]);
+                    stmt.setInt(2, i+1);
+                    stmt.setTimestamp(3, new java.sql.Timestamp(System.currentTimeMillis()));
+                    stmt.setTimestamp(4, new java.sql.Timestamp(System.currentTimeMillis()));
+                    stmt.execute();
+                }
             }
             // Customers
-            stmt = C195.dbConnection.prepareStatement("INSERT INTO `customer` (customerName, addressId, active, createDate, createdBy, lastUpdate, lastUpdateBy) VALUES ('John Doe',1,1,'2019-01-06 16:19:19','test','2019-01-06 16:19:19','dummyData'),(2,'Jane Doe',2,1,'0000-00-00 00:00:00','test','0000-00-00 00:00:00','dummyData'),(3,'Sally Test',3,1,'0000-00-00 00:00:00','test','0000-00-00 00:00:00','dummyData');");
-            stmt.execute();
+//            stmt = C195.dbConnection.prepareStatement("INSERT INTO `customer` (customerName, addressId, active, createDate, createdBy, lastUpdate, lastUpdateBy) VALUES ('John Doe',1,1,'2019-01-06 16:19:19','test','2019-01-06 16:19:19','dummyData'),('Jane Doe',2,1,'0000-00-00 00:00:00','test','0000-00-00 00:00:00','dummyData'),('Sally Test',3,1,'0000-00-00 00:00:00','test','0000-00-00 00:00:00','dummyData');");
+//            stmt.execute();
 
             // Users
-            stmt = C195.dbConnection.prepareStatement("INSERT INTO `user` (userName, password, active, createBy, createDate, lastUpdate, lastUpdatedBy) VALUES ('test','test',1,'test','2019-01-06 16:00:37','2019-01-06 16:00:37','dummyData');");
-            stmt.execute();
-            stmt = C195.dbConnection.prepareStatement("INSERT INTO `user` (userName, password, active, createBy, createDate, lastUpdate, lastUpdatedBy) VALUES ('taylor','tayloriscool',1,'test','2019-01-06 16:00:37','2019-01-06 16:00:37','dummyData');");
-            stmt.execute();
+            // Removing for now since it shouldn't delete the user accounts.
+//            stmt = C195.dbConnection.prepareStatement("INSERT INTO `user` (userName, password, active, createBy, createDate, lastUpdate, lastUpdatedBy) VALUES ('test','test',1,'test','2019-01-06 16:00:37','2019-01-06 16:00:37','dummyData');");
+//            stmt.execute();
+//            stmt = C195.dbConnection.prepareStatement("INSERT INTO `user` (userName, password, active, createBy, createDate, lastUpdate, lastUpdatedBy) VALUES ('taylor','tayloriscool',1,'test','2019-01-06 16:00:37','2019-01-06 16:00:37','dummyData');");
+//            stmt.execute();
 
         } catch (SQLException e) {
             System.out.println("Issue with SQL");
@@ -107,7 +118,8 @@ public class RootLayoutController {
             stmt.execute("TRUNCATE customer");
             stmt.execute("TRUNCATE incrementtypes");
             stmt.execute("TRUNCATE reminder");
-            stmt.execute("TRUNCATE user");
+            // Leaving out user so that the program can still log in
+            // stmt.execute("TRUNCATE user");
 
         } catch(SQLException e) {
             System.out.println("Issue with SQL");

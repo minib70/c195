@@ -3,6 +3,7 @@ package C195;
 import C195.Model.User;
 import C195.Util.DB;
 import C195.View_Controller.AppointmentsController;
+import C195.View_Controller.CustomersController;
 import C195.View_Controller.LoginController;
 import C195.View_Controller.RootLayoutController;
 import javafx.application.Application;
@@ -86,6 +87,7 @@ public class C195 extends Application {
         //TODO: disable load and clear database until user is logged in.
     }
 
+    @SuppressWarnings("Duplicates")
     public void showAppointmentsScreen() throws  IOException {
         // Instantiate the controller
         FXMLLoader loader = new FXMLLoader();
@@ -99,6 +101,25 @@ public class C195 extends Application {
         rootLayout.getChildren().add(appointments);
         primaryStage.setHeight(appointments.getPrefHeight());
         primaryStage.setWidth(appointments.getPrefWidth());
+        rootLayoutController.showViewMenu();
+    }
+
+    /**
+     * @throws IOException When fxml doesn't load
+     */
+    @SuppressWarnings("Duplicates")
+    public void showCustomersScreen() throws IOException {
+        // Instantiate the controller
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(C195.class.getResource("View_Controller/Customers.fxml"));
+        CustomersController controller = new CustomersController(this);
+        loader.setController(controller);
+
+        AnchorPane customers = loader.load();
+        rootLayout.getChildren().remove(1);
+        rootLayout.getChildren().add(customers);
+        primaryStage.setHeight(customers.getPrefHeight());
+        primaryStage.setWidth(customers.getPrefWidth());
         rootLayoutController.showViewMenu();
     }
 }
