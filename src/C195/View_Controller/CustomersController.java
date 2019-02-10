@@ -21,11 +21,13 @@ import java.util.ResourceBundle;
 public class CustomersController implements Initializable {
     private C195 main;
     private ObservableList<Customer> customers;
+    private ObservableList<String> cities;
     @FXML private Label labelCurrentCustomer;
-    @FXML private TextField textFieldCustomerID, textFieldName, textFieldAddress1, textFieldAddress2, textFieldCity, textFieldCountry, textFieldPostalCode, textFieldPhone;
+    @FXML private TextField textFieldCustomerID, textFieldName, textFieldAddress1, textFieldAddress2, textFieldCountry, textFieldPostalCode, textFieldPhone;
     @FXML private TableView<Customer> tableViewCustomers;
     @FXML private TableColumn<Customer, String> tableColumnName, tableColumnPhone, tableColumnID;
     @FXML private Button buttonModifyCustomer, buttonDeleteCustomer, buttonAddCustomer;
+    @FXML private ComboBox<String> comboBoxCity;
 
     public CustomersController(C195 main) {
         this.main = main;
@@ -49,17 +51,22 @@ public class CustomersController implements Initializable {
                 customer.setName(rs.getString("customer.customerName"));
                 customer.setPhone(rs.getString("address.phone"));
                 customer.setCustomerID(rs.getInt("customer.customerId"));
+                customer.setAddress(rs.getString("address.address"));
+                customer.setAddress2(rs.getString("address.address2"));
+                customer.setCity(rs.getString("city.city"));
+                customer.setPostalCode(rs.getString("address.postalCode"));
+                customer.setCountry(rs.getString("country.country"));
                 customers.add(customer);
             }
 
-            showCustomerData();
+            showCustomerDataTable();
         } catch(SQLException e) {
             System.out.println("Issue with SQL");
             e.printStackTrace();
         }
     }
 
-    private void showCustomerData() {
+    private void showCustomerDataTable() {
         FilteredList<Customer> filteredCustomers = new FilteredList<>(customers, p -> true);
         //TODO: add search
         SortedList<Customer> sortedCustomers = new SortedList<>(filteredCustomers);
@@ -91,7 +98,9 @@ public class CustomersController implements Initializable {
         textFieldName.setEditable(editable);
         textFieldAddress1.setEditable(editable);
         textFieldAddress2.setEditable(editable);
-        textFieldCity.setEditable(editable);
+        // ComboBox is a bit different than text field, so it is the opposite of editable
+        comboBoxCity.setDisable(!editable);
+        comboBoxCity.setStyle("-fx-text-fill: -fx-text-base-color;-fx-opacity: 1;");
         textFieldCountry.setEditable(editable);
         textFieldPostalCode.setEditable(editable);
         textFieldPhone.setEditable(editable);
@@ -105,6 +114,11 @@ public class CustomersController implements Initializable {
     private void showCustomerDetails(Customer selectedCustomer) {
         textFieldCustomerID.setText(String.valueOf(selectedCustomer.getCustomerID()));
         textFieldName.setText(selectedCustomer.getName());
+        textFieldAddress1.setText(selectedCustomer.getAddress());
+        textFieldAddress2.setText(selectedCustomer.getAddress2());
+        comboBoxCity.setValue(selectedCustomer.getCity());
+        textFieldCountry.setText(selectedCustomer.getCountry());
+        textFieldPostalCode.setText(selectedCustomer.getPostalCode());
         textFieldPhone.setText(selectedCustomer.getPhone());
     }
 
@@ -127,8 +141,6 @@ public class CustomersController implements Initializable {
         // Set table fields
         tableViewCustomers.setEditable(true);
         tableViewCustomers.setPlaceholder(new Label("No customers found."));
-
-
 
         // Populate Customers
         loadCustomers();

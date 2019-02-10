@@ -6,12 +6,11 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
 public class Customer {
-    private final IntegerProperty customerID, addressID;
+    private final IntegerProperty customerID;
     private final StringProperty name, address, address2, city, postalCode, phone, country;
 
     public Customer() {
         this.customerID = new SimpleIntegerProperty();
-        this.addressID = new SimpleIntegerProperty();
         this.name = new SimpleStringProperty();
         this.address = new SimpleStringProperty();
         this.address2 = new SimpleStringProperty();
@@ -31,18 +30,6 @@ public class Customer {
 
     public void setCustomerID(int customerID) {
         this.customerID.set(customerID);
-    }
-
-    public int getAddressID() {
-        return addressID.get();
-    }
-
-    public IntegerProperty addressIDProperty() {
-        return addressID;
-    }
-
-    public void setAddressID(int addressID) {
-        this.addressID.set(addressID);
     }
 
     public String getName() {
