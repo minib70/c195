@@ -21,9 +21,11 @@ import java.util.ResourceBundle;
 public class CustomersController implements Initializable {
     private C195 main;
     private ObservableList<Customer> customers;
+    @FXML private Label labelCurrentCustomer;
     @FXML private TextField textFieldCustomerID, textFieldName, textFieldAddress1, textFieldAddress2, textFieldCity, textFieldCountry, textFieldPostalCode, textFieldPhone;
     @FXML private TableView<Customer> tableViewCustomers;
-    @FXML private TableColumn<Customer, String> tableColumnName, tableColumnPhone;
+    @FXML private TableColumn<Customer, String> tableColumnName, tableColumnPhone, tableColumnID;
+    @FXML private Button buttonModifyCustomer, buttonDeleteCustomer, buttonAddCustomer;
 
     public CustomersController(C195 main) {
         this.main = main;
@@ -33,9 +35,12 @@ public class CustomersController implements Initializable {
     private void loadCustomers() {
         try {
             PreparedStatement stmt = C195.dbConnection.prepareStatement(
-                    "SELECT customer.customerName, address.phone "
-                            + "FROM customer, address "
-                            + "WHERE customer.addressId = address.addressId"
+                    "SELECT customer.customerName, customer.customerId, address.phone, "
+                            + "address.address, address.address2, address.postalCode, city.city, "
+                            + "country.country "
+                            + "FROM customer, address, city, country "
+                            + "WHERE customer.addressId = address.addressId "
+                            + "AND address.cityId = city.cityId AND city.countryId = country.countryId"
             );
             ResultSet rs = stmt.executeQuery();
 
@@ -43,6 +48,7 @@ public class CustomersController implements Initializable {
                 Customer customer = new Customer();
                 customer.setName(rs.getString("customer.customerName"));
                 customer.setPhone(rs.getString("address.phone"));
+                customer.setCustomerID(rs.getInt("customer.customerId"));
                 customers.add(customer);
             }
 
@@ -62,6 +68,7 @@ public class CustomersController implements Initializable {
         sortedCustomers.comparatorProperty().bind(tableViewCustomers.comparatorProperty());
         tableColumnName.setCellValueFactory(new PropertyValueFactory<>("name"));
         tableColumnPhone.setCellValueFactory(new PropertyValueFactory<>("phone"));
+        tableColumnID.setCellValueFactory(new PropertyValueFactory<>("customerID"));
         tableViewCustomers.setItems(sortedCustomers);
         tableViewCustomers.refresh();
         if(tableViewCustomers.getItems().size() > 0) {
@@ -75,28 +82,53 @@ public class CustomersController implements Initializable {
 
     @FXML private void buttonRefreshDataClicked() {
         // Clear existing data
+        //TODO: Move this to load customers?
         customers.clear();
         loadCustomers();
+    }
+    
+    private void setCustomerTextFieldEditable(boolean editable) {
+        textFieldName.setEditable(editable);
+        textFieldAddress1.setEditable(editable);
+        textFieldAddress2.setEditable(editable);
+        textFieldCity.setEditable(editable);
+        textFieldCountry.setEditable(editable);
+        textFieldPostalCode.setEditable(editable);
+        textFieldPhone.setEditable(editable);
+    }
+
+    @FXML private void userClickedOnCustomerTable() {
+        buttonModifyCustomer.setDisable(false);
+        buttonDeleteCustomer.setDisable(false);
+    }
+
+    private void showCustomerDetails(Customer selectedCustomer) {
+        textFieldCustomerID.setText(String.valueOf(selectedCustomer.getCustomerID()));
+        textFieldName.setText(selectedCustomer.getName());
+        textFieldPhone.setText(selectedCustomer.getPhone());
     }
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         //TODO: Add translations
 
+        // Listener for clicks on table
+        tableViewCustomers.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+            if(newSelection != null) {
+                showCustomerDetails(newSelection);
+            }
+        });
+
         // Lock down text fields by default
+        setCustomerTextFieldEditable(false);
+        // Always set id to uneditable
         textFieldCustomerID.setEditable(false);
-        textFieldName.setEditable(false);
-        textFieldAddress1.setEditable(false);
-        textFieldAddress2.setEditable(false);
-        textFieldCity.setEditable(false);
-        textFieldCountry.setEditable(false);
-        textFieldPostalCode.setEditable(false);
-        textFieldPhone.setEditable(false);
 
         // Set table fields
         tableViewCustomers.setEditable(true);
-        tableViewCustomers.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         tableViewCustomers.setPlaceholder(new Label("No customers found."));
+
+
 
         // Populate Customers
         loadCustomers();

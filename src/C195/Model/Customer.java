@@ -7,7 +7,55 @@ import javafx.beans.property.StringProperty;
 
 public class Customer {
     private final IntegerProperty customerID, addressID;
-    private final StringProperty name, address, address2, city, postalCode, phone;
+    private final StringProperty name, address, address2, city, postalCode, phone, country;
+
+    public Customer() {
+        this.customerID = new SimpleIntegerProperty();
+        this.addressID = new SimpleIntegerProperty();
+        this.name = new SimpleStringProperty();
+        this.address = new SimpleStringProperty();
+        this.address2 = new SimpleStringProperty();
+        this.city = new SimpleStringProperty();
+        this.postalCode = new SimpleStringProperty();
+        this.phone = new SimpleStringProperty();
+        this.country = new SimpleStringProperty();
+    }
+
+    public int getCustomerID() {
+        return customerID.get();
+    }
+
+    public IntegerProperty customerIDProperty() {
+        return customerID;
+    }
+
+    public void setCustomerID(int customerID) {
+        this.customerID.set(customerID);
+    }
+
+    public int getAddressID() {
+        return addressID.get();
+    }
+
+    public IntegerProperty addressIDProperty() {
+        return addressID;
+    }
+
+    public void setAddressID(int addressID) {
+        this.addressID.set(addressID);
+    }
+
+    public String getName() {
+        return name.get();
+    }
+
+    public StringProperty nameProperty() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name.set(name);
+    }
 
     public String getAddress() {
         return address.get();
@@ -69,50 +117,15 @@ public class Customer {
         this.phone.set(phone);
     }
 
-    public Customer() {
-        this.customerID = new SimpleIntegerProperty();
-        this.addressID = new SimpleIntegerProperty();
-        this.name = new SimpleStringProperty();
-        this.address = new SimpleStringProperty();
-        this.address2 = new SimpleStringProperty();
-        this.city = new SimpleStringProperty();
-        this.postalCode = new SimpleStringProperty();
-        this.phone = new SimpleStringProperty();
+    public String getCountry() {
+        return country.get();
     }
 
-    public int getCustomerID() {
-        return customerID.get();
+    public StringProperty countryProperty() {
+        return country;
     }
 
-    public IntegerProperty customerIDProperty() {
-        return customerID;
-    }
-
-    public void setCustomerID(int customerID) {
-        this.customerID.set(customerID);
-    }
-
-    public int getAddressID() {
-        return addressID.get();
-    }
-
-    public IntegerProperty addressIDProperty() {
-        return addressID;
-    }
-
-    public void setAddressID(int addressID) {
-        this.addressID.set(addressID);
-    }
-
-    public String getName() {
-        return name.get();
-    }
-
-    public StringProperty nameProperty() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name.set(name);
+    public void setCountry(String country) {
+        this.country.set(country);
     }
 }

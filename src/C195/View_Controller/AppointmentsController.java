@@ -31,6 +31,7 @@ public class AppointmentsController implements Initializable {
     @FXML private TableColumn<Appointment, String> columnAppointmentsEnd;
     @FXML private ToggleGroup toggleGroupAppointmentView;
     @FXML private RadioButton radioAllAppointments, radioMonthlyAppointments, radioWeeklyAppointments;
+    @FXML private Button buttonNewAppointment, buttonModifyAppointment, buttonDeleteAppointment;
 
     public AppointmentsController(C195 main) {
         this.main = main;
@@ -84,9 +85,6 @@ public class AppointmentsController implements Initializable {
         columnAppointmentsEnd.setCellValueFactory(new PropertyValueFactory<>("end"));
         tableViewAppointments.setItems(appointments);
         tableViewAppointments.refresh();
-//        if(tableViewAppointments.getItems().size() > 0) {
-//            tableViewAppointments.getSelectionModel().clearAndSelect(0);
-//        }
     }
 
     @FXML private void customersButtonClicked() throws IOException {
@@ -98,6 +96,11 @@ public class AppointmentsController implements Initializable {
         // Clear existing data
         appointments.clear();
         loadAppointments();
+    }
+
+    @FXML private void userClickedOnAppointmentTable() {
+        buttonDeleteAppointment.setDisable(false);
+        buttonModifyAppointment.setDisable(false);
     }
 
     @Override
