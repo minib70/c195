@@ -3,6 +3,7 @@ package C195.View_Controller;
 import C195.C195;
 import C195.Model.Customer;
 import C195.Model.Validation;
+import com.sun.org.apache.bcel.internal.generic.Select;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -11,6 +12,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import oracle.jrockit.jfr.openmbean.RecordingOptionsType;
 
 import java.io.IOException;
 import java.net.URL;
@@ -30,6 +32,7 @@ public class CustomersController implements Initializable {
     @FXML private TableColumn<Customer, String> tableColumnName, tableColumnPhone, tableColumnID;
     @FXML private Button buttonModifyCustomer, buttonDeleteCustomer, buttonAddCustomer, buttonSave, buttonCancel;
     @FXML private ComboBox<String> comboBoxCity;
+    private TableView.TableViewSelectionModel<Customer> defaultSelectionModel;
 
     public CustomersController(C195 main) {
         this.main = main;
@@ -140,6 +143,11 @@ public class CustomersController implements Initializable {
         setButtonVisable(editable);
         setCustomerTextFieldEditable(editable);
         buttonModifyCustomer.setDisable(editable);
+        if(editable) {
+            tableViewCustomers.setSelectionModel(null);
+        } else {
+            tableViewCustomers.setSelectionModel(defaultSelectionModel);
+        }
     }
 
     @FXML private void cancelButtonClicked() {
@@ -173,7 +181,16 @@ public class CustomersController implements Initializable {
         if(errors.length() >= 1) {
             Alerts.warningAlert(errors.toString());
         } else {
-            //TODO: Save
+            // Confirm user wants to save
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Save Customer?");
+            alert.setHeaderText("Are you sure you want to save?");
+            alert.setContentText("When you save, it will save new or overwrite existing customer.  Are you sure?");
+            Optional<ButtonType> optional = alert.showAndWait();
+            if(optional.get() == ButtonType.OK) {
+                editMode(false);
+                //TODO: Save
+            }
             editMode(false);
         }
     }
@@ -240,6 +257,9 @@ public class CustomersController implements Initializable {
         setCustomerTextFieldEditable(false);
         // Always set id to uneditable
         textFieldCustomerID.setEditable(false);
+
+        // Get default selection model to enable and disable table clicks during edit
+        defaultSelectionModel = tableViewCustomers.getSelectionModel();
 
         // Set table fields
         tableViewCustomers.setEditable(true);
