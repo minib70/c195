@@ -129,7 +129,7 @@
                                     <TextField fx:id="textFieldCountry" editable="false" onMouseClicked="#mouseClickedCountryTextField" GridPane.columnIndex="1" GridPane.rowIndex="6" />
                                     <TextField fx:id="textFieldPostalCode" GridPane.columnIndex="1" GridPane.rowIndex="7" />
                                     <TextField fx:id="textFieldPhone" GridPane.columnIndex="1" GridPane.rowIndex="8" />
-                                    <Label fx:id="labelCurrentCustomer" alignment="CENTER" prefHeight="20.0" prefWidth="338.0" GridPane.columnIndex="1" />
+                                    <Label fx:id="labelCustomerStatus" alignment="CENTER" prefHeight="20.0" prefWidth="338.0" GridPane.columnIndex="1" />
                                     <ComboBox fx:id="comboBoxCity" prefHeight="42.0" prefWidth="337.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
                                  </children>
                                  <padding>

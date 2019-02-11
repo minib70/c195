@@ -6,13 +6,13 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
 public class City {
-    private final IntegerProperty cityID, countryID;
-    private final StringProperty city;
+    private final IntegerProperty cityID;
+    private final StringProperty city, country;
 
     public City() {
         this.cityID = new  SimpleIntegerProperty();
-        this.countryID = new SimpleIntegerProperty();
         this.city = new SimpleStringProperty();
+        this.country = new SimpleStringProperty();
     }
 
     public int getCityID() {
@@ -27,18 +27,6 @@ public class City {
         this.cityID.set(cityID);
     }
 
-    public int getCountryID() {
-        return countryID.get();
-    }
-
-    public IntegerProperty countryIDProperty() {
-        return countryID;
-    }
-
-    public void setCountryID(int countryID) {
-        this.countryID.set(countryID);
-    }
-
     public String getCity() {
         return city.get();
     }
@@ -49,5 +37,17 @@ public class City {
 
     public void setCity(String city) {
         this.city.set(city);
+    }
+
+    public String getCountry() {
+        return country.get();
+    }
+
+    public StringProperty countryProperty() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country.set(country);
     }
 }
