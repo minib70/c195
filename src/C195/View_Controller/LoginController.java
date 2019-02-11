@@ -4,13 +4,11 @@ import C195.C195;
 import C195.Model.User;
 import C195.Model.Validation;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.AnchorPane;
 
 import java.io.IOException;
 import java.net.URL;
@@ -42,7 +40,7 @@ public class LoginController implements Initializable {
         User validUser;
 
         // Validate username
-        String usernameValidation = Validation.validateUsername(inputUsername);
+        String usernameValidation = Validation.validateName(inputUsername);
         if(!usernameValidation.isEmpty()) {
             errors.append(usernameValidation);
             errors.append("\n");

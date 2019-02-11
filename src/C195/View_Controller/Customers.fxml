@@ -118,7 +118,7 @@
                                           <Insets left="40.0" />
                                        </padding>
                                     </Label>
-                                    <TextField fx:id="textFieldCustomerID" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                    <TextField fx:id="textFieldCustomerID" onMouseClicked="#mouseClickedCustomerIDTextField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                                     <TextField fx:id="textFieldName" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                                     <TextField fx:id="textFieldAddress1" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                                     <TextField fx:id="textFieldAddress2" GridPane.columnIndex="1" GridPane.rowIndex="4">
@@ -126,7 +126,7 @@
                                           <Insets />
                                        </GridPane.margin>
                                     </TextField>
-                                    <TextField fx:id="textFieldCountry" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                                    <TextField fx:id="textFieldCountry" editable="false" onMouseClicked="#mouseClickedCountryTextField" GridPane.columnIndex="1" GridPane.rowIndex="6" />
                                     <TextField fx:id="textFieldPostalCode" GridPane.columnIndex="1" GridPane.rowIndex="7" />
                                     <TextField fx:id="textFieldPhone" GridPane.columnIndex="1" GridPane.rowIndex="8" />
                                     <Label fx:id="labelCurrentCustomer" alignment="CENTER" prefHeight="20.0" prefWidth="338.0" GridPane.columnIndex="1" />
@@ -143,8 +143,8 @@
                                           <Insets />
                                        </HBox.margin>
                                     </Region>
-                                    <Button fx:id="buttonSave" mnemonicParsing="false" prefHeight="40.0" prefWidth="75.0" text="Save" />
-                                    <Button fx:id="buttonCancel" mnemonicParsing="false" prefHeight="40.0" prefWidth="75.0" text="Cancel" />
+                                    <Button fx:id="buttonSave" mnemonicParsing="false" onAction="#saveButtonClicked" prefHeight="40.0" prefWidth="75.0" text="Save" />
+                                    <Button fx:id="buttonCancel" mnemonicParsing="false" onAction="#cancelButtonClicked" prefHeight="40.0" prefWidth="75.0" text="Cancel" />
                                  </children>
                                  <VBox.margin>
                                     <Insets top="5.0" />
@@ -162,7 +162,7 @@
                   <Region prefHeight="200.0" prefWidth="200.0" />
                   <Button fx:id="buttonAddCustomer" mnemonicParsing="false" prefHeight="40.0" prefWidth="300.0" text="Add New Customer" />
                   <Region prefHeight="200.0" prefWidth="200.0" />
-                  <Button fx:id="buttonModifyCustomer" mnemonicParsing="false" prefWidth="300.0" text="Modify Customer" />
+                  <Button fx:id="buttonModifyCustomer" mnemonicParsing="false" onAction="#modifyButtonClicked" prefWidth="300.0" text="Modify Customer" />
                   <Region prefHeight="200.0" prefWidth="200.0" />
                   <Button fx:id="buttonDeleteCustomer" mnemonicParsing="false" prefWidth="300.0" text="Delete Customer" />
                </children>
