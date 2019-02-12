@@ -83,7 +83,6 @@ public class CustomersController implements Initializable {
                 city.setCountry(cityrs.getString("country.country"));
 
                 city.setCityId(cityrs.getInt("city.cityId"));
-                System.out.println("City ID from db query: " + city.getCityId());
                 city.setCountryId(cityrs.getInt("country.countryId"));
                 cities.add(city);
             }
@@ -233,7 +232,6 @@ public class CustomersController implements Initializable {
             if(optional.get() == ButtonType.OK) {
                 Customer customerToSave = new Customer();
                 City customerCity = comboBoxCity.getSelectionModel().getSelectedItem();
-                System.out.println("City ID from Combobox: " + customerCity.getCityId());
                 customerToSave.setCustomerId(modifyCustomer.getCustomerId());
                 customerToSave.setName(textFieldName.getText());
                 customerToSave.setAddress(textFieldAddress1.getText());
@@ -245,14 +243,43 @@ public class CustomersController implements Initializable {
                 customerToSave.setPhone(textFieldPhone.getText());
                 customerToSave.setCityId(customerCity.getCityId());
                 customerToSave.setCountryId(customerCity.getCountryId());
-                System.out.println("Customer selected city data:" + customerToSave.getCityId() + " " + customerToSave.getCity());
                 saveCustomerToDb(customerToSave);
                 labelCustomerStatus.setText(null);
                 labelCustomerStatus.setStyle(null);
                 editMode(false);
                 buttonRefreshDataClicked(); //TODO: Set this to an action instead of button
+                // Clears modify object
+                modifyCustomer = null;
             }
             editMode(false);
+        }
+    }
+
+    @FXML private void deleteButtonClicked() {
+        Customer customerToDelete = tableViewCustomers.getSelectionModel().getSelectedItem();
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Delete Customer?");
+        alert.setHeaderText("Are you sure you want to delete the following customer?");
+        alert.setContentText("Delete user: \n\n" + customerToDelete.getName());
+        Optional<ButtonType> optional = alert.showAndWait();
+        if(optional.get() == ButtonType.OK) {
+            deleteCustomer(customerToDelete);
+            buttonRefreshDataClicked(); //TODO: set to a method and not a button
+        }
+    }
+
+    private void deleteCustomer(Customer customerToDelete) {
+        try {
+            PreparedStatement custD = C195.dbConnection.prepareStatement(
+                    "DELETE customer.*, address.* "
+                    + "FROM customer, address "
+                    + "WHERE customer.customerId = ? AND customer.addressId = address.addressId "
+            );
+            custD.setInt(1, customerToDelete.getCustomerId());
+            custD.execute();
+        } catch(SQLException e) {
+            System.out.println("Issue with SQL.");
+            e.printStackTrace();
         }
     }
 
