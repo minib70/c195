@@ -1,30 +1,15 @@
 package C195.Model;
 
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
 public class City {
-    private final IntegerProperty cityID;
+    private int cityId, countryId;
     private final StringProperty city, country;
 
     public City() {
-        this.cityID = new  SimpleIntegerProperty();
         this.city = new SimpleStringProperty();
         this.country = new SimpleStringProperty();
-    }
-
-    public int getCityID() {
-        return cityID.get();
-    }
-
-    public IntegerProperty cityIDProperty() {
-        return cityID;
-    }
-
-    public void setCityID(int cityID) {
-        this.cityID.set(cityID);
     }
 
     public String getCity() {
@@ -49,5 +34,21 @@ public class City {
 
     public void setCountry(String country) {
         this.country.set(country);
+    }
+
+    public int getCityId() {
+        return cityId;
+    }
+
+    public void setCityId(int cityId) {
+        this.cityId = cityId;
+    }
+
+    public int getCountryId() {
+        return countryId;
+    }
+
+    public void setCountryId(int countryId) {
+        this.countryId = countryId;
     }
 }

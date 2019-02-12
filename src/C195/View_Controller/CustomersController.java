@@ -4,7 +4,6 @@ import C195.C195;
 import C195.Model.City;
 import C195.Model.Customer;
 import C195.Model.Validation;
-import com.sun.org.apache.bcel.internal.generic.Select;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -14,7 +13,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.util.StringConverter;
-import oracle.jrockit.jfr.openmbean.RecordingOptionsType;
 
 import java.io.IOException;
 import java.net.URL;
@@ -47,8 +45,8 @@ public class CustomersController implements Initializable {
         try {
             PreparedStatement stmt = C195.dbConnection.prepareStatement(
                     "SELECT customer.customerName, customer.customerId, address.phone, "
-                            + "address.address, address.address2, address.postalCode, city.city, "
-                            + "country.country "
+                            + "address.address, address.address2, address.postalCode, address.addressId, "
+                            + "city.city, city.cityId, country.country, country.countryId "
                             + "FROM customer, address, city, country "
                             + "WHERE customer.addressId = address.addressId "
                             + "AND address.cityId = city.cityId AND city.countryId = country.countryId"
@@ -59,18 +57,21 @@ public class CustomersController implements Initializable {
                 Customer customer = new Customer();
                 customer.setName(rs.getString("customer.customerName"));
                 customer.setPhone(rs.getString("address.phone"));
-                customer.setCustomerID(rs.getInt("customer.customerId"));
+                customer.setCustomerId(rs.getInt("customer.customerId"));
                 customer.setAddress(rs.getString("address.address"));
                 customer.setAddress2(rs.getString("address.address2"));
                 customer.setCity(rs.getString("city.city"));
                 customer.setPostalCode(rs.getString("address.postalCode"));
                 customer.setCountry(rs.getString("country.country"));
+                customer.setAddressId(rs.getInt("address.addressId"));
+                customer.setCityId(rs.getInt("city.cityId"));
+                customer.setCountryId(rs.getInt("country.countryId"));
                 customers.add(customer);
             }
 
             // Populate cities and countries
             PreparedStatement citystmt = C195.dbConnection.prepareStatement(
-                    "SELECT city.city, country.country "
+                    "SELECT city.city, city.cityId, country.country, country.countryId "
                     + "FROM city, country "
                     + "WHERE city.countryId = country.countryId"
             );
@@ -80,6 +81,10 @@ public class CustomersController implements Initializable {
                 City city = new City();
                 city.setCity(cityrs.getString("city.city"));
                 city.setCountry(cityrs.getString("country.country"));
+
+                city.setCityId(cityrs.getInt("city.cityId"));
+                System.out.println("City ID from db query: " + city.getCityId());
+                city.setCountryId(cityrs.getInt("country.countryId"));
                 cities.add(city);
             }
 
@@ -138,7 +143,7 @@ public class CustomersController implements Initializable {
     }
 
     private void showCustomerDetails(Customer selectedCustomer) {
-        textFieldCustomerID.setText(String.valueOf(selectedCustomer.getCustomerID()));
+        textFieldCustomerID.setText(String.valueOf(selectedCustomer.getCustomerId()));
         textFieldName.setText(selectedCustomer.getName());
         textFieldAddress1.setText(selectedCustomer.getAddress());
         textFieldAddress2.setText(selectedCustomer.getAddress2());
@@ -160,6 +165,12 @@ public class CustomersController implements Initializable {
         modifyCustomer = tableViewCustomers.getSelectionModel().getSelectedItem();
         editMode(true);
         populateCityComboBox();
+        City city = new City();
+        city.setCityId(modifyCustomer.getCityId());
+        city.setCity(modifyCustomer.getCity());
+        city.setCountryId(modifyCustomer.getCountryId());
+        city.setCountry(modifyCustomer.getCountry());
+        comboBoxCity.setValue(city);
         labelCustomerStatus.setText("MODIFYING CUSTOMER - " + modifyCustomer.getName());
         labelCustomerStatus.setStyle("-fx-background-color: WHITE; -fx-font-size: 120%;");
     }
@@ -221,23 +232,71 @@ public class CustomersController implements Initializable {
             Optional<ButtonType> optional = alert.showAndWait();
             if(optional.get() == ButtonType.OK) {
                 Customer customerToSave = new Customer();
+                City customerCity = comboBoxCity.getSelectionModel().getSelectedItem();
+                System.out.println("City ID from Combobox: " + customerCity.getCityId());
+                customerToSave.setCustomerId(modifyCustomer.getCustomerId());
                 customerToSave.setName(textFieldName.getText());
                 customerToSave.setAddress(textFieldAddress1.getText());
                 customerToSave.setAddress2(textFieldAddress2.getText());
-                customerToSave.setCity(comboBoxCity.getSelectionModel().getSelectedItem().getCity());
-                customerToSave.setCountry(textFieldCountry.getText());
+                customerToSave.setAddressId(modifyCustomer.getAddressId());
+                customerToSave.setCity(customerCity.getCity());
+                customerToSave.setCountry(customerCity.getCountry());
                 customerToSave.setPostalCode(textFieldPostalCode.getText());
                 customerToSave.setPhone(textFieldPhone.getText());
+                customerToSave.setCityId(customerCity.getCityId());
+                customerToSave.setCountryId(customerCity.getCountryId());
+                System.out.println("Customer selected city data:" + customerToSave.getCityId() + " " + customerToSave.getCity());
                 saveCustomerToDb(customerToSave);
+                labelCustomerStatus.setText(null);
+                labelCustomerStatus.setStyle(null);
                 editMode(false);
-                //TODO: refresh table data
+                buttonRefreshDataClicked(); //TODO: Set this to an action instead of button
             }
             editMode(false);
         }
     }
 
     private void saveCustomerToDb(Customer customerToSave) {
+        // This tells us if this is a modify customer or a new customer
+        if(customerToSave.getCustomerId() > 0) {
+            // This is a modify so we need to match it to an existing record in the db
+            try {
+                // Modify address
+                PreparedStatement addr = C195.dbConnection.prepareStatement(
+                        "UPDATE address, customer, city, country "
+                            + "SET address.address = ?, address.address2 = ?, address.cityId = ?, "
+                            + "address.postalCode = ?, address.phone = ?, address.lastUpdate = ?, address.lastUpdateBy = ? "
+                            + "WHERE customer.customerId = ? AND customer.addressId = address.addressId "
+                            + "AND address.cityId = city.cityId AND city.countryId = country.countryId "
+                );
+                addr.setString(1, customerToSave.getAddress());
+                addr.setString(2, customerToSave.getAddress2());
+                addr.setInt(3, customerToSave.getCityId());
+                addr.setString(4, customerToSave.getPostalCode());
+                addr.setString(5, customerToSave.getPhone());
+                addr.setTimestamp(6, new java.sql.Timestamp(System.currentTimeMillis()));
+                addr.setString(7, main.currentUser.getUsername());
+                addr.setInt(8, customerToSave.getCustomerId());
+                addr.execute();
 
+                // Modify Customer
+                PreparedStatement cust = C195.dbConnection.prepareStatement(
+                        "UPDATE address, customer "
+                        + "SET customer.customerName = ?, customer.lastUpdateBy = ?, customer.lastUpdateBy = ?  "
+                        + "WHERE customer.customerId = ? AND customer.addressId = address.addressId "
+                );
+                cust.setString(1, customerToSave.getName());
+                cust.setTimestamp(2, new java.sql.Timestamp(System.currentTimeMillis()));
+                cust.setString(3, main.currentUser.getUsername());
+                cust.setInt(4, customerToSave.getCustomerId());
+                cust.execute();
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        } else { // This is a new customer
+            //TODO: Write new customer
+        }
     }
 
     private String validationErrors(TextField field, String validations) {

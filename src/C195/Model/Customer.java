@@ -6,11 +6,12 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
 public class Customer {
-    private final IntegerProperty customerID;
+    private final IntegerProperty customerId;
     private final StringProperty name, address, address2, city, postalCode, phone, country;
+    private int addressId, cityId, countryId;
 
     public Customer() {
-        this.customerID = new SimpleIntegerProperty();
+        this.customerId = new SimpleIntegerProperty();
         this.name = new SimpleStringProperty();
         this.address = new SimpleStringProperty();
         this.address2 = new SimpleStringProperty();
@@ -20,16 +21,16 @@ public class Customer {
         this.country = new SimpleStringProperty();
     }
 
-    public int getCustomerID() {
-        return customerID.get();
+    public int getCustomerId() {
+        return customerId.get();
     }
 
-    public IntegerProperty customerIDProperty() {
-        return customerID;
+    public IntegerProperty customerIdProperty() {
+        return customerId;
     }
 
-    public void setCustomerID(int customerID) {
-        this.customerID.set(customerID);
+    public void setCustomerId(int customerId) {
+        this.customerId.set(customerId);
     }
 
     public String getName() {
@@ -114,5 +115,29 @@ public class Customer {
 
     public void setCountry(String country) {
         this.country.set(country);
+    }
+
+    public int getAddressId() {
+        return addressId;
+    }
+
+    public void setAddressId(int addressId) {
+        this.addressId = addressId;
+    }
+
+    public int getCityId() {
+        return cityId;
+    }
+
+    public void setCityId(int cityId) {
+        this.cityId = cityId;
+    }
+
+    public int getCountryId() {
+        return countryId;
+    }
+
+    public void setCountryId(int countryId) {
+        this.countryId = countryId;
     }
 }
