@@ -19,6 +19,7 @@ import java.net.URL;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -34,6 +35,7 @@ public class CustomersController implements Initializable {
     @FXML private ComboBox<City> comboBoxCity;
     private TableView.TableViewSelectionModel<Customer> defaultSelectionModel;
     private Customer modifyCustomer;
+    private boolean isModify;
 
     public CustomersController(C195 main) {
         this.main = main;
@@ -172,6 +174,7 @@ public class CustomersController implements Initializable {
         comboBoxCity.setValue(city);
         labelCustomerStatus.setText("MODIFYING CUSTOMER - " + modifyCustomer.getName());
         labelCustomerStatus.setStyle("-fx-background-color: WHITE; -fx-font-size: 120%;");
+        isModify = true;
     }
 
     private void editMode(boolean editable) {
@@ -225,18 +228,25 @@ public class CustomersController implements Initializable {
         } else {
             // Confirm user wants to save
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-            alert.setTitle("Save Customer - " + modifyCustomer.getName());
+            if(isModify) {
+                alert.setTitle("Save Customer - " + modifyCustomer.getName());
+                alert.setContentText("When you save, it will save new or overwrite existing customer.  Are you sure?");
+            } else {
+                alert.setTitle("Save New Customer - " + textFieldName.getText());
+                alert.setContentText("Saving new customer.  Are you sure?");
+            }
             alert.setHeaderText("Are you sure you want to save?");
-            alert.setContentText("When you save, it will save new or overwrite existing customer.  Are you sure?");
             Optional<ButtonType> optional = alert.showAndWait();
             if(optional.get() == ButtonType.OK) {
                 Customer customerToSave = new Customer();
                 City customerCity = comboBoxCity.getSelectionModel().getSelectedItem();
-                customerToSave.setCustomerId(modifyCustomer.getCustomerId());
+                if(isModify) {
+                    customerToSave.setCustomerId(modifyCustomer.getCustomerId());
+                    customerToSave.setAddressId(modifyCustomer.getAddressId());
+                }
                 customerToSave.setName(textFieldName.getText());
                 customerToSave.setAddress(textFieldAddress1.getText());
                 customerToSave.setAddress2(textFieldAddress2.getText());
-                customerToSave.setAddressId(modifyCustomer.getAddressId());
                 customerToSave.setCity(customerCity.getCity());
                 customerToSave.setCountry(customerCity.getCountry());
                 customerToSave.setPostalCode(textFieldPostalCode.getText());
@@ -283,6 +293,29 @@ public class CustomersController implements Initializable {
         }
     }
 
+    @FXML private void addCustomerButtonClicked() {
+        editMode(true);
+        populateCityComboBox();
+        labelCustomerStatus.setText("ADDING NEW CUSTOMER");
+        labelCustomerStatus.setStyle("-fx-background-color: WHITE; -fx-font-size: 120%;");
+        clearTextFields();
+        isModify = false;
+    }
+
+    private void clearTextFields() {
+        textFieldName.setText(null);
+        textFieldAddress1.setText(null);
+        textFieldAddress2.setText(null);
+        textFieldPostalCode.setText(null);
+        textFieldPhone.setText(null);
+        textFieldCustomerID.setText("VALUE GENERATED AUTOMATICALLY");
+    }
+
+    private void addNewCustomer(Customer customerToSave) {
+
+    }
+
+    @SuppressWarnings("Duplicates")
     private void saveCustomerToDb(Customer customerToSave) {
         // This tells us if this is a modify customer or a new customer
         if(customerToSave.getCustomerId() > 0) {
@@ -322,7 +355,50 @@ public class CustomersController implements Initializable {
                 e.printStackTrace();
             }
         } else { // This is a new customer
-            //TODO: Write new customer
+            try {
+                // Create new address
+                PreparedStatement newAddr = C195.dbConnection.prepareStatement(
+                        "INSERT INTO address (address, address2, cityId, postalCode, phone, createDate, createdBy, lastUpdate, lastUpdateBy) "
+                        + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS
+                );
+                newAddr.setString(1, customerToSave.getAddress());
+                newAddr.setString(2, customerToSave.getAddress2());
+                newAddr.setInt(3, customerToSave.getCityId());
+                newAddr.setString(4, customerToSave.getPostalCode());
+                newAddr.setString(5, customerToSave.getPhone());
+                newAddr.setTimestamp(6, new java.sql.Timestamp(System.currentTimeMillis()));
+                newAddr.setString(7, main.currentUser.getUsername());
+                newAddr.setTimestamp(8, new java.sql.Timestamp(System.currentTimeMillis()));
+                newAddr.setString(9, main.currentUser.getUsername());
+                newAddr.execute();
+
+                // Assign address ID to customer
+                ResultSet rs = newAddr.getGeneratedKeys();
+                if(rs.next()) {
+                    customerToSave.setAddressId(rs.getInt(1));
+                } else {
+                    System.out.println("No generated key returns, customer is flawed.");
+                    customerToSave.setAddressId(-1);
+                }
+
+                // Create new Customer
+                PreparedStatement newCust = C195.dbConnection.prepareStatement(
+                        "INSERT INTO customer (customername, addressid, active, createdate, createdby, lastupdate, lastupdateby) "
+                        + "VALUES (?, ?, ?, ?, ?, ?, ?) "
+                );
+                newCust.setString(1, customerToSave.getName());
+                newCust.setInt(2, customerToSave.getAddressId());
+                newCust.setInt(3, 1);
+                newCust.setTimestamp(4, new java.sql.Timestamp(System.currentTimeMillis()));
+                newCust.setString(5, main.currentUser.getUsername());
+                newCust.setTimestamp(6, new java.sql.Timestamp(System.currentTimeMillis()));
+                newCust.setString(7, main.currentUser.getUsername());
+                newCust.execute();
+
+            } catch(SQLException e) {
+                System.out.println("Issue with SQL");
+                e.printStackTrace();
+            }
         }
     }
 

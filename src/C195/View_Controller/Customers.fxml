@@ -160,7 +160,7 @@
                <children>
                   <Button fx:id="buttonAppointments" mnemonicParsing="false" onAction="#appointmentsButtonClicked" prefHeight="40.0" prefWidth="300.0" text="Appointments" />
                   <Region prefHeight="200.0" prefWidth="200.0" />
-                  <Button fx:id="buttonAddCustomer" mnemonicParsing="false" prefHeight="40.0" prefWidth="300.0" text="Add New Customer" />
+                  <Button fx:id="buttonAddCustomer" mnemonicParsing="false" onAction="#addCustomerButtonClicked" prefHeight="40.0" prefWidth="300.0" text="Add New Customer" />
                   <Region prefHeight="200.0" prefWidth="200.0" />
                   <Button fx:id="buttonModifyCustomer" mnemonicParsing="false" onAction="#modifyButtonClicked" prefWidth="300.0" text="Modify Customer" />
                   <Region prefHeight="200.0" prefWidth="200.0" />
