@@ -246,7 +246,12 @@ public class CustomersController implements Initializable {
                 }
                 customerToSave.setName(textFieldName.getText());
                 customerToSave.setAddress(textFieldAddress1.getText());
-                customerToSave.setAddress2(textFieldAddress2.getText());
+                if(textFieldAddress2 != null) {
+                    customerToSave.setAddress2(textFieldAddress2.getText());
+                } else {
+                    customerToSave.setAddress2(" ");
+                }
+
                 customerToSave.setCity(customerCity.getCity());
                 customerToSave.setCountry(customerCity.getCountry());
                 customerToSave.setPostalCode(textFieldPostalCode.getText());
@@ -362,7 +367,11 @@ public class CustomersController implements Initializable {
                         + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS
                 );
                 newAddr.setString(1, customerToSave.getAddress());
-                newAddr.setString(2, customerToSave.getAddress2());
+                if(customerToSave.getAddress2() == null) {
+                    newAddr.setString(2, "");
+                } else {
+                    newAddr.setString(2, customerToSave.getAddress2());
+                }
                 newAddr.setInt(3, customerToSave.getCityId());
                 newAddr.setString(4, customerToSave.getPostalCode());
                 newAddr.setString(5, customerToSave.getPhone());

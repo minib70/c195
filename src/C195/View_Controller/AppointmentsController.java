@@ -103,6 +103,10 @@ public class AppointmentsController implements Initializable {
         buttonModifyAppointment.setDisable(false);
     }
 
+    @FXML private void buttonNewAppointmentClicked() throws IOException {
+        main.showAppointmentAddScreen();
+    }
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         labelAppointmentTitle.setText(main.rb.getString("appointment_title"));

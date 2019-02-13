@@ -2,10 +2,7 @@ package C195;
 
 import C195.Model.User;
 import C195.Util.DB;
-import C195.View_Controller.AppointmentsController;
-import C195.View_Controller.CustomersController;
-import C195.View_Controller.LoginController;
-import C195.View_Controller.RootLayoutController;
+import C195.View_Controller.*;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -84,7 +81,6 @@ public class C195 extends Application {
             rootLayout.getChildren().remove(1);
         }
         rootLayout.getChildren().add(login);
-        //TODO: disable load and clear database until user is logged in.
     }
 
     @SuppressWarnings("Duplicates")
@@ -99,8 +95,8 @@ public class C195 extends Application {
         // Removes just the login screen from root
         rootLayout.getChildren().remove(1);
         rootLayout.getChildren().add(appointments);
-        primaryStage.setHeight(appointments.getPrefHeight());
-        primaryStage.setWidth(appointments.getPrefWidth());
+        primaryStage.setHeight(appointments.getPrefHeight() + 35);
+        primaryStage.setWidth(appointments.getPrefWidth() + 35);
         rootLayoutController.showViewMenu();
     }
 
@@ -118,8 +114,20 @@ public class C195 extends Application {
         AnchorPane customers = loader.load();
         rootLayout.getChildren().remove(1);
         rootLayout.getChildren().add(customers);
-        primaryStage.setHeight(customers.getPrefHeight());
-        primaryStage.setWidth(customers.getPrefWidth());
+        rootLayoutController.showViewMenu();
+    }
+
+    @SuppressWarnings("Duplicates")
+    public void showAppointmentAddScreen() throws IOException {
+        // Instantiate the controller
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(C195.class.getResource("View_controller/AppointmentAdd.fxml"));
+        AppointmentAddController controller = new AppointmentAddController(this);
+        loader.setController(controller);
+
+        AnchorPane appointment = loader.load();
+        rootLayout.getChildren().remove(1);
+        rootLayout.getChildren().add(appointment);
         rootLayoutController.showViewMenu();
     }
 }

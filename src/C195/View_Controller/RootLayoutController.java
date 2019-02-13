@@ -71,7 +71,7 @@ public class RootLayoutController {
                 // Appointment
                 stmt = C195.dbConnection.prepareStatement("INSERT INTO `appointment` (customerId, title, description, location, contact, url, start, end, createDate, createdBy, lastUpdate,lastUpdateBy) VALUES (?,CONCAT('Appointment Title',?),CONCAT('Appointment Description',?),'location','contact','url','2019-01-10 16:00:00','2019-01-10 17:00:00','2019-01-06 16:23:08','test','2019-01-06 16:27:17', 'test')");
                 stmt.setInt(1, i);
-                stmt.setInt(2, 1);
+                stmt.setInt(2, i);
                 stmt.setInt(3, i);
                 stmt.execute();
 
