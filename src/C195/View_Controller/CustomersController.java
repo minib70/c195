@@ -3,6 +3,7 @@ package C195.View_Controller;
 import C195.C195;
 import C195.Model.City;
 import C195.Model.Customer;
+import C195.Model.DBMethods;
 import C195.Model.Validation;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -16,10 +17,6 @@ import javafx.util.StringConverter;
 
 import java.io.IOException;
 import java.net.URL;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -44,59 +41,17 @@ public class CustomersController implements Initializable {
     }
 
     private void loadCustomers() {
-        try {
-            PreparedStatement stmt = C195.dbConnection.prepareStatement(
-                    "SELECT customer.customerName, customer.customerId, address.phone, "
-                            + "address.address, address.address2, address.postalCode, address.addressId, "
-                            + "city.city, city.cityId, country.country, country.countryId "
-                            + "FROM customer, address, city, country "
-                            + "WHERE customer.addressId = address.addressId "
-                            + "AND address.cityId = city.cityId AND city.countryId = country.countryId"
-            );
-            ResultSet rs = stmt.executeQuery();
+        // Populate countries
+        customers = DBMethods.getCustomers();
 
-            while(rs.next()) {
-                Customer customer = new Customer();
-                customer.setName(rs.getString("customer.customerName"));
-                customer.setPhone(rs.getString("address.phone"));
-                customer.setCustomerId(rs.getInt("customer.customerId"));
-                customer.setAddress(rs.getString("address.address"));
-                customer.setAddress2(rs.getString("address.address2"));
-                customer.setCity(rs.getString("city.city"));
-                customer.setPostalCode(rs.getString("address.postalCode"));
-                customer.setCountry(rs.getString("country.country"));
-                customer.setAddressId(rs.getInt("address.addressId"));
-                customer.setCityId(rs.getInt("city.cityId"));
-                customer.setCountryId(rs.getInt("country.countryId"));
-                customers.add(customer);
-            }
+        // Populate cities and countries
+        cities = DBMethods.getCities();
 
-            // Populate cities and countries
-            PreparedStatement citystmt = C195.dbConnection.prepareStatement(
-                    "SELECT city.city, city.cityId, country.country, country.countryId "
-                    + "FROM city, country "
-                    + "WHERE city.countryId = country.countryId"
-            );
-
-            ResultSet cityrs = citystmt.executeQuery();
-            while(cityrs.next()) {
-                City city = new City();
-                city.setCity(cityrs.getString("city.city"));
-                city.setCountry(cityrs.getString("country.country"));
-
-                city.setCityId(cityrs.getInt("city.cityId"));
-                city.setCountryId(cityrs.getInt("country.countryId"));
-                cities.add(city);
-            }
-
-            showCustomerDataTable();
-            populateCityComboBox();
-        } catch(SQLException e) {
-            System.out.println("Issue with SQL");
-            e.printStackTrace();
-        }
+        showCustomerDataTable();
+        populateCityComboBox();
     }
 
+    @SuppressWarnings("Duplicates")
     private void showCustomerDataTable() {
         FilteredList<Customer> filteredCustomers = new FilteredList<>(customers, p -> true);
         //TODO: add search
@@ -258,7 +213,7 @@ public class CustomersController implements Initializable {
                 customerToSave.setPhone(textFieldPhone.getText());
                 customerToSave.setCityId(customerCity.getCityId());
                 customerToSave.setCountryId(customerCity.getCountryId());
-                saveCustomerToDb(customerToSave);
+                DBMethods.saveCustomer(customerToSave, main.currentUser.getUsername());
                 labelCustomerStatus.setText(null);
                 labelCustomerStatus.setStyle(null);
                 editMode(false);
@@ -278,23 +233,8 @@ public class CustomersController implements Initializable {
         alert.setContentText("Delete user: \n\n" + customerToDelete.getName());
         Optional<ButtonType> optional = alert.showAndWait();
         if(optional.get() == ButtonType.OK) {
-            deleteCustomer(customerToDelete);
+            DBMethods.deleteCustomer(customerToDelete);
             buttonRefreshDataClicked(); //TODO: set to a method and not a button
-        }
-    }
-
-    private void deleteCustomer(Customer customerToDelete) {
-        try {
-            PreparedStatement custD = C195.dbConnection.prepareStatement(
-                    "DELETE customer.*, address.* "
-                    + "FROM customer, address "
-                    + "WHERE customer.customerId = ? AND customer.addressId = address.addressId "
-            );
-            custD.setInt(1, customerToDelete.getCustomerId());
-            custD.execute();
-        } catch(SQLException e) {
-            System.out.println("Issue with SQL.");
-            e.printStackTrace();
         }
     }
 
@@ -318,97 +258,6 @@ public class CustomersController implements Initializable {
 
     private void addNewCustomer(Customer customerToSave) {
 
-    }
-
-    @SuppressWarnings("Duplicates")
-    private void saveCustomerToDb(Customer customerToSave) {
-        // This tells us if this is a modify customer or a new customer
-        if(customerToSave.getCustomerId() > 0) {
-            // This is a modify so we need to match it to an existing record in the db
-            try {
-                // Modify address
-                PreparedStatement addr = C195.dbConnection.prepareStatement(
-                        "UPDATE address, customer, city, country "
-                            + "SET address.address = ?, address.address2 = ?, address.cityId = ?, "
-                            + "address.postalCode = ?, address.phone = ?, address.lastUpdate = ?, address.lastUpdateBy = ? "
-                            + "WHERE customer.customerId = ? AND customer.addressId = address.addressId "
-                            + "AND address.cityId = city.cityId AND city.countryId = country.countryId "
-                );
-                addr.setString(1, customerToSave.getAddress());
-                addr.setString(2, customerToSave.getAddress2());
-                addr.setInt(3, customerToSave.getCityId());
-                addr.setString(4, customerToSave.getPostalCode());
-                addr.setString(5, customerToSave.getPhone());
-                addr.setTimestamp(6, new java.sql.Timestamp(System.currentTimeMillis()));
-                addr.setString(7, main.currentUser.getUsername());
-                addr.setInt(8, customerToSave.getCustomerId());
-                addr.execute();
-
-                // Modify Customer
-                PreparedStatement cust = C195.dbConnection.prepareStatement(
-                        "UPDATE address, customer "
-                        + "SET customer.customerName = ?, customer.lastUpdateBy = ?, customer.lastUpdateBy = ?  "
-                        + "WHERE customer.customerId = ? AND customer.addressId = address.addressId "
-                );
-                cust.setString(1, customerToSave.getName());
-                cust.setTimestamp(2, new java.sql.Timestamp(System.currentTimeMillis()));
-                cust.setString(3, main.currentUser.getUsername());
-                cust.setInt(4, customerToSave.getCustomerId());
-                cust.execute();
-
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        } else { // This is a new customer
-            try {
-                // Create new address
-                PreparedStatement newAddr = C195.dbConnection.prepareStatement(
-                        "INSERT INTO address (address, address2, cityId, postalCode, phone, createDate, createdBy, lastUpdate, lastUpdateBy) "
-                        + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS
-                );
-                newAddr.setString(1, customerToSave.getAddress());
-                if(customerToSave.getAddress2() == null) {
-                    newAddr.setString(2, "");
-                } else {
-                    newAddr.setString(2, customerToSave.getAddress2());
-                }
-                newAddr.setInt(3, customerToSave.getCityId());
-                newAddr.setString(4, customerToSave.getPostalCode());
-                newAddr.setString(5, customerToSave.getPhone());
-                newAddr.setTimestamp(6, new java.sql.Timestamp(System.currentTimeMillis()));
-                newAddr.setString(7, main.currentUser.getUsername());
-                newAddr.setTimestamp(8, new java.sql.Timestamp(System.currentTimeMillis()));
-                newAddr.setString(9, main.currentUser.getUsername());
-                newAddr.execute();
-
-                // Assign address ID to customer
-                ResultSet rs = newAddr.getGeneratedKeys();
-                if(rs.next()) {
-                    customerToSave.setAddressId(rs.getInt(1));
-                } else {
-                    System.out.println("No generated key returns, customer is flawed.");
-                    customerToSave.setAddressId(-1);
-                }
-
-                // Create new Customer
-                PreparedStatement newCust = C195.dbConnection.prepareStatement(
-                        "INSERT INTO customer (customername, addressid, active, createdate, createdby, lastupdate, lastupdateby) "
-                        + "VALUES (?, ?, ?, ?, ?, ?, ?) "
-                );
-                newCust.setString(1, customerToSave.getName());
-                newCust.setInt(2, customerToSave.getAddressId());
-                newCust.setInt(3, 1);
-                newCust.setTimestamp(4, new java.sql.Timestamp(System.currentTimeMillis()));
-                newCust.setString(5, main.currentUser.getUsername());
-                newCust.setTimestamp(6, new java.sql.Timestamp(System.currentTimeMillis()));
-                newCust.setString(7, main.currentUser.getUsername());
-                newCust.execute();
-
-            } catch(SQLException e) {
-                System.out.println("Issue with SQL");
-                e.printStackTrace();
-            }
-        }
     }
 
     private String validationErrors(TextField field, String validations) {
