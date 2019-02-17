@@ -4,11 +4,12 @@ import C195.C195;
 import com.mysql.cj.protocol.Resultset;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import sun.nio.cs.ext.DoubleByte;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 public class DBMethods {
     public static ObservableList<Customer> getCustomers() {
@@ -182,6 +183,38 @@ public class DBMethods {
         ObservableList<Appointment> appointments = FXCollections.observableArrayList();
 
         return appointments;
+    }
+
+    public static void saveAppointment(Appointment appointmentToSave, String currentUser, int customerId) {
+        try {
+            PreparedStatement newApt = C195.dbConnection.prepareStatement(
+                    "INSERT INTO appointment "
+                    + "(customerId, title, description, location, contact, url, start, end, createDate, createdBy, lastUpdate, lastUpdateBy)  "
+                    + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) "
+            );
+            newApt.setInt(1, customerId);
+            newApt.setString(2, appointmentToSave.getTitle());
+            newApt.setString(3, appointmentToSave.getDescription());
+            newApt.setString(4, "");
+            newApt.setString(5, "");
+            newApt.setString(6, "");
+            ZonedDateTime startZ = ZonedDateTime.parse(appointmentToSave.getStart());
+            LocalDateTime start = startZ.toLocalDateTime();
+            Timestamp startT = Timestamp.valueOf(start);
+            newApt.setTimestamp(7, startT);
+            ZonedDateTime endZ = ZonedDateTime.parse(appointmentToSave.getEnd());
+            LocalDateTime end = endZ.toLocalDateTime();
+            Timestamp endT = Timestamp.valueOf(end);
+            newApt.setTimestamp(8, endT);
+            newApt.setTimestamp(9, new java.sql.Timestamp(System.currentTimeMillis()));
+            newApt.setString(10, currentUser);
+            newApt.setTimestamp(11, new java.sql.Timestamp(System.currentTimeMillis()));
+            newApt.setString(12, currentUser);
+            newApt.execute();
+        } catch (SQLException e) {
+            System.out.println("Issue with SQL");
+            e.printStackTrace();
+        }
     }
 
 }

@@ -6,6 +6,10 @@
 
 package C195.Model;
 
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
+
 public class Validation {
     public static String validateName(String name) {
         StringBuilder errors = new StringBuilder();
@@ -48,6 +52,24 @@ public class Validation {
         // Ensure phone is not null
         if(phone == null || phone.isEmpty()) {
             errors.append("Phone number must contain at least 1 character.");
+        }
+        return errors.toString();
+    }
+
+    public static String validateStartEndTimes(String startTime, String endTime) {
+        StringBuilder errors = new StringBuilder();
+        // Ensure timestamps are valid
+        DateTimeFormatter timeFormatter = DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT);
+        try {
+            LocalTime startLocal = LocalTime.parse(startTime, timeFormatter);
+            LocalTime endLocal = LocalTime.parse(endTime, timeFormatter);
+
+            // Ensure start time occurs before end time
+            if(startLocal.isAfter(endLocal)) {
+                errors.append("Start time occurs AFTER end time, please fix.");
+            }
+        } catch(Exception e) {
+            errors.append("Issue parsing time.  Very broken");
         }
         return errors.toString();
     }

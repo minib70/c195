@@ -117,7 +117,7 @@
             <HBox prefHeight="140.0" prefWidth="980.0" spacing="10.0">
                <children>
                   <Region prefHeight="57.0" prefWidth="748.0" />
-                  <Button fx:id="buttonSave" mnemonicParsing="false" prefWidth="150.0" text="Save" />
+                  <Button fx:id="buttonSave" mnemonicParsing="false" onAction="#saveButtonClicked" prefWidth="150.0" text="Save" />
                   <Button fx:id="buttonCancel" mnemonicParsing="false" onAction="#buttonCancelClicked" prefWidth="150.0" text="Cancel" />
                </children>
                <VBox.margin>

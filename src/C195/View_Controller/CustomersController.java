@@ -184,7 +184,7 @@ public class CustomersController implements Initializable {
             // Confirm user wants to save
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             if(isModify) {
-                alert.setTitle("Save Customer - " + modifyCustomer.getName());
+                alert.setTitle("Save modified Customer - " + modifyCustomer.getName());
                 alert.setContentText("When you save, it will save new or overwrite existing customer.  Are you sure?");
             } else {
                 alert.setTitle("Save New Customer - " + textFieldName.getText());
