@@ -182,6 +182,32 @@ public class DBMethods {
     public static ObservableList<Appointment> getAppointments() {
         ObservableList<Appointment> appointments = FXCollections.observableArrayList();
 
+        try {
+            PreparedStatement stmt = C195.dbConnection.prepareStatement( //TODO: Add customer name
+                    "SELECT appointment.appointmentId, appointment.customerId, appointment.title, "
+                            + "appointment.description, appointment.start, appointment.end, appointment.createdBy, "
+                            + "appointment.location, appointment.contact, customer.customerName "
+                            + "FROM appointment, customer "
+                            + "WHERE appointment.customerId = customer.customerId "
+            );
+            ResultSet rs = stmt.executeQuery();
+            while(rs.next()) {
+                Appointment appt = new Appointment();
+                appt.setAppointmentID(rs.getInt("appointment.appointmentId"));
+                appt.setCustomerID(rs.getInt("appointment.customerId"));
+                appt.setTitle(rs.getString("appointment.title"));
+                appt.setDescription(rs.getString("appointment.description"));
+                appt.setLocation(rs.getString("appointment.location"));
+                appt.setContact(rs.getString("appointment.contact"));
+                appt.setStart(rs.getString("appointment.start"));
+                appt.setEnd(rs.getString("appointment.end"));
+                appt.setCustomerName(rs.getString("customer.customerName"));
+                appointments.add(appt);
+            }
+        } catch (SQLException e) {
+            System.out.println("Issue with SQL");
+            e.printStackTrace();
+        }
         return appointments;
     }
 

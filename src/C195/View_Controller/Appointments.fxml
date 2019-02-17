@@ -46,12 +46,11 @@
                <children>
                   <TableView fx:id="tableViewAppointments" onMouseClicked="#userClickedOnAppointmentTable" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                     <columns>
-                        <TableColumn fx:id="columnAppointmentsTitle" prefWidth="94.0" text="Title" />
-                      <TableColumn fx:id="columnAppointmentsDescription" prefWidth="94.0" text="Description" />
-                      <TableColumn fx:id="columnAppointmentsContact" text="Contact" />
-                        <TableColumn fx:id="columnAppointmentsLocation" prefWidth="378.0" text="Location" />
-                        <TableColumn fx:id="columnAppointmentsStart" prefWidth="185.0" text="Start" />
-                        <TableColumn fx:id="columnAppointmentsEnd" prefWidth="233.0" text="End" />
+                        <TableColumn fx:id="columnAppointmentsTitle" prefWidth="169.0" text="Title" />
+                      <TableColumn fx:id="columnAppointmentsDescription" prefWidth="194.0" text="Description" />
+                      <TableColumn fx:id="columnAppointmentsCustomer" minWidth="0.0" prefWidth="273.0" text="Customer" />
+                        <TableColumn fx:id="columnAppointmentsStart" prefWidth="159.0" text="Start" />
+                        <TableColumn fx:id="columnAppointmentsEnd" prefWidth="174.0" text="End" />
                     </columns>
                   </TableView>
                </children>

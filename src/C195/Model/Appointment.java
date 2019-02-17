@@ -7,7 +7,7 @@ import javafx.beans.property.StringProperty;
 
 public class Appointment {
     private final IntegerProperty appointmentID, customerID;
-    private final StringProperty title, description, location, contact, start, end;
+    private final StringProperty title, description, location, contact, start, end, customerName;
 
     public Appointment() {
         this.appointmentID = new SimpleIntegerProperty();
@@ -18,6 +18,7 @@ public class Appointment {
         this.contact = new SimpleStringProperty();
         this.start = new SimpleStringProperty();
         this.end = new SimpleStringProperty();
+        this.customerName = new SimpleStringProperty();
     }
 
     public int getAppointmentID() {
@@ -114,5 +115,17 @@ public class Appointment {
 
     public void setEnd(String end) {
         this.end.set(end);
+    }
+
+    public String getCustomerName() {
+        return customerName.get();
+    }
+
+    public StringProperty customerNameProperty() {
+        return customerName;
+    }
+
+    public void setCustomerName(String customerName) {
+        this.customerName.set(customerName);
     }
 }
