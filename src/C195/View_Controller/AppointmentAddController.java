@@ -84,6 +84,7 @@ public class AppointmentAddController implements Initializable {
         if(tableViewCustomers.getItems().size() > 0) {
             tableViewCustomers.getSelectionModel().clearAndSelect(0);
         }
+        //TODO: select current customer from list.
     }
 
     private void populateAppointmentTypes() {
@@ -127,7 +128,7 @@ public class AppointmentAddController implements Initializable {
         } else { // no errors
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             if(isModify) {
-                alert.setTitle("Save modified Appointment - ");
+                alert.setTitle("Save modified Appointment - " + textFieldAppointmentTitle.getText());
                 alert.setContentText("When you save, it will overwrite existing appointment.");
             } else {
                 alert.setTitle("Save new Appointment - " + textFieldAppointmentTitle.getText());
@@ -137,8 +138,8 @@ public class AppointmentAddController implements Initializable {
             Optional<ButtonType> optional = alert.showAndWait();
             if(optional.get() == ButtonType.OK) {
                 Appointment appointmentToSave = new Appointment();
-                if(appointmentToUpdate != null) { // Modify appointment
-                    appointmentToSave.setAppointmentID(appointmentToSave.getAppointmentID());
+                if(isModify) { // Modify appointment
+                    appointmentToSave.setAppointmentID(appointmentToUpdate.getAppointmentID());
                 }
                 // Convert times to LocalDateTime
                 LocalDate localDate = datePickerAppointmentDate.getValue();
@@ -149,7 +150,6 @@ public class AppointmentAddController implements Initializable {
                 // Convert to UTC
                 ZonedDateTime startUTC = startLocalDate.atZone(zoneID).withZoneSameInstant(ZoneId.of("UTC"));
                 ZonedDateTime endUTC = endLocalDate.atZone(zoneID).withZoneSameInstant(ZoneId.of("UTC"));
-                System.out.println("startUTC: " + startUTC.toString());
 
                 appointmentToSave.setTitle(textFieldAppointmentTitle.getText());
                 appointmentToSave.setStart(startUTC.toString());
@@ -180,17 +180,33 @@ public class AppointmentAddController implements Initializable {
         // Listener for clicks on customer table
         tableViewCustomers.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
             if(newSelection != null) {
-                labelCurrentAppointment.setText("New appointment with " + newSelection.getName() + ".");
+                if(isModify) {
+                    labelCurrentAppointment.setText("Modifying appointment with " + newSelection.getName() + ".");
+                } else {
+                    labelCurrentAppointment.setText("New appointment with " + newSelection.getName() + ".");
+                }
+
             }
         });
 
-        // If is modify
-        if(appointmentToUpdate != null) {
-            populateAppointmentToModify();
-        }
         // Show customer table
         showCustomerDataTable();
         populateTimes();
         populateAppointmentTypes();
+
+        // If is modify
+        if(appointmentToUpdate != null) {
+            System.out.println("We are modifying");
+            isModify = true;
+            populateAppointmentToModify();
+            for(int i = 0; i < customers.size(); i++) {
+                if(customers.get(i).getCustomerId() == appointmentToUpdate.getCustomerID()) { // we found a match
+                    System.out.println("Match found: " + customers.get(i).getName());
+                    tableViewCustomers.getSelectionModel().select(customers.get(i));
+                }
+            }
+        } else {
+            isModify = false;
+        }
     }
 }

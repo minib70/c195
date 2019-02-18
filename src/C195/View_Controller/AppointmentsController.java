@@ -86,7 +86,6 @@ public class AppointmentsController implements Initializable {
         } else {
             Alerts.warningAlert("Can only modify one item at a time.");
         }
-        main.showAppointmentAddScreen(tableViewAppointments.getSelectionModel().getSelectedItem());
     }
 
     @Override

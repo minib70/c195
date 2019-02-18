@@ -224,34 +224,69 @@ public class DBMethods {
     }
 
     public static void saveAppointment(Appointment appointmentToSave, String currentUser, int customerId) {
-        try {
-            PreparedStatement newApt = C195.dbConnection.prepareStatement(
-                    "INSERT INTO appointment "
-                    + "(customerId, title, description, location, contact, url, start, end, createDate, createdBy, lastUpdate, lastUpdateBy)  "
-                    + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) "
-            );
-            newApt.setInt(1, customerId);
-            newApt.setString(2, appointmentToSave.getTitle());
-            newApt.setString(3, appointmentToSave.getDescription());
-            newApt.setString(4, "");
-            newApt.setString(5, "");
-            newApt.setString(6, "");
-            ZonedDateTime startZ = ZonedDateTime.parse(appointmentToSave.getStart());
-            LocalDateTime start = startZ.toLocalDateTime();
-            Timestamp startT = Timestamp.valueOf(start);
-            newApt.setTimestamp(7, startT);
-            ZonedDateTime endZ = ZonedDateTime.parse(appointmentToSave.getEnd());
-            LocalDateTime end = endZ.toLocalDateTime();
-            Timestamp endT = Timestamp.valueOf(end);
-            newApt.setTimestamp(8, endT);
-            newApt.setTimestamp(9, new java.sql.Timestamp(System.currentTimeMillis()));
-            newApt.setString(10, currentUser);
-            newApt.setTimestamp(11, new java.sql.Timestamp(System.currentTimeMillis()));
-            newApt.setString(12, currentUser);
-            newApt.execute();
-        } catch (SQLException e) {
-            System.out.println("Issue with SQL");
-            e.printStackTrace();
+        //TODO: Fix issue with timmezone in database
+
+        // This tells us if this is a modify appointment or a new appointment
+        if (appointmentToSave.getAppointmentID() > 0) {
+            // This is modify so we need to match it to an existing record
+            try {
+                System.out.println("Modifying appointment.");
+                PreparedStatement stmt = C195.dbConnection.prepareStatement(
+                        "UPDATE appointment "
+                        + "SET appointment.title = ?, appointment.customerId = ?, appointment.description = ?, "
+                        + "appointment.start = ?, appointment.end = ?, appointment.lastUpdate = ?, appointment.lastUpdateBy = ? "
+                        + "WHERE appointmentId = ? "
+                );
+                stmt.setString(1, appointmentToSave.getTitle());
+                stmt.setInt(2, customerId);
+                stmt.setString(3, appointmentToSave.getDescription());
+                ZonedDateTime startZ = ZonedDateTime.parse(appointmentToSave.getStart());
+                LocalDateTime start = startZ.toLocalDateTime();
+                Timestamp startT = Timestamp.valueOf(start);
+                stmt.setTimestamp(4, startT);
+                ZonedDateTime endZ = ZonedDateTime.parse(appointmentToSave.getEnd());
+                LocalDateTime end = endZ.toLocalDateTime();
+                Timestamp endT = Timestamp.valueOf(end);
+                stmt.setTimestamp(5, endT);
+                stmt.setTimestamp(6, new Timestamp(System.currentTimeMillis()));
+                stmt.setString(7, currentUser);
+                stmt.setInt(8, appointmentToSave.getAppointmentID());
+                stmt.execute();
+            } catch (SQLException e) {
+                System.out.println("Issue with SQL");
+                e.printStackTrace();
+            }
+        } else {
+            try {
+                System.out.println("New Apppointment");
+                PreparedStatement newApt = C195.dbConnection.prepareStatement(
+                        "INSERT INTO appointment "
+                                + "(customerId, title, description, location, contact, url, start, end, createDate, createdBy, lastUpdate, lastUpdateBy)  "
+                                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) "
+                );
+                newApt.setInt(1, customerId);
+                newApt.setString(2, appointmentToSave.getTitle());
+                newApt.setString(3, appointmentToSave.getDescription());
+                newApt.setString(4, "");
+                newApt.setString(5, "");
+                newApt.setString(6, "");
+                ZonedDateTime startZ = ZonedDateTime.parse(appointmentToSave.getStart());
+                LocalDateTime start = startZ.toLocalDateTime();
+                Timestamp startT = Timestamp.valueOf(start);
+                newApt.setTimestamp(7, startT);
+                ZonedDateTime endZ = ZonedDateTime.parse(appointmentToSave.getEnd());
+                LocalDateTime end = endZ.toLocalDateTime();
+                Timestamp endT = Timestamp.valueOf(end);
+                newApt.setTimestamp(8, endT);
+                newApt.setTimestamp(9, new Timestamp(System.currentTimeMillis()));
+                newApt.setString(10, currentUser);
+                newApt.setTimestamp(11, new Timestamp(System.currentTimeMillis()));
+                newApt.setString(12, currentUser);
+                newApt.execute();
+            } catch (SQLException e) {
+                System.out.println("Issue with SQL");
+                e.printStackTrace();
+            }
         }
     }
 
