@@ -9,9 +9,14 @@ import sun.nio.cs.ext.DoubleByte;
 import java.sql.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 
 public class DBMethods {
+    private static final ZoneId zid = ZoneId.systemDefault();
+    private static final DateTimeFormatter timeFormatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT);
     public static ObservableList<Customer> getCustomers() {
         ObservableList<Customer> customers = FXCollections.observableArrayList();
         try {
@@ -199,8 +204,15 @@ public class DBMethods {
                 appt.setDescription(rs.getString("appointment.description"));
                 appt.setLocation(rs.getString("appointment.location"));
                 appt.setContact(rs.getString("appointment.contact"));
-                appt.setStart(rs.getString("appointment.start"));
-                appt.setEnd(rs.getString("appointment.end"));
+                // Get timestamps and translate to local time
+                Timestamp startT = rs.getTimestamp("appointment.start");
+                ZonedDateTime startZ = startT.toLocalDateTime().atZone(ZoneId.of("UTC"));
+                ZonedDateTime startL = startZ.withZoneSameLocal(zid);
+                appt.setStart(startL.format(timeFormatter));
+                Timestamp endT = rs.getTimestamp("appointment.end");
+                ZonedDateTime endZ = endT.toLocalDateTime().atZone(ZoneId.of("UTC"));
+                ZonedDateTime endL = endZ.withZoneSameLocal(zid);
+                appt.setEnd(endL.format(timeFormatter));
                 appt.setCustomerName(rs.getString("customer.customerName"));
                 appointments.add(appt);
             }

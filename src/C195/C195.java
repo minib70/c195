@@ -1,5 +1,6 @@
 package C195;
 
+import C195.Model.Appointment;
 import C195.Model.User;
 import C195.Util.DB;
 import C195.View_Controller.*;
@@ -63,7 +64,6 @@ public class C195 extends Application {
         primaryStage.setScene(scene);
         primaryStage.show();
         primaryStage.setResizable(false);
-        primaryStage.sizeToScene();
         rootLayoutController.hideViewMenu();
     }
 
@@ -118,11 +118,11 @@ public class C195 extends Application {
     }
 
     @SuppressWarnings("Duplicates")
-    public void showAppointmentAddScreen() throws IOException {
+    public void showAppointmentAddScreen(Appointment appointmentToUpdate) throws IOException {
         // Instantiate the controller
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(C195.class.getResource("View_controller/AppointmentAdd.fxml"));
-        AppointmentAddController controller = new AppointmentAddController(this);
+        AppointmentAddController controller = new AppointmentAddController(this, appointmentToUpdate);
         loader.setController(controller);
 
         AnchorPane appointment = loader.load();

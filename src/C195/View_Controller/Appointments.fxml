@@ -64,7 +64,7 @@
                   <Region prefHeight="200.0" prefWidth="200.0" />
                   <Button fx:id="buttonNewAppointment" mnemonicParsing="false" onAction="#buttonNewAppointmentClicked" prefHeight="40.0" prefWidth="300.0" text="Add New Appointment" />
                   <Region prefHeight="200.0" prefWidth="200.0" />
-                  <Button fx:id="buttonModifyAppointment" disable="true" mnemonicParsing="false" prefWidth="300.0" text="Modify Appointment" />
+                  <Button fx:id="buttonModifyAppointment" disable="true" mnemonicParsing="false" onAction="#buttonModifyAppointmentClicked" prefWidth="300.0" text="Modify Appointment" />
                   <Region prefHeight="200.0" prefWidth="200.0" />
                   <Button fx:id="buttonDeleteAppointment" disable="true" mnemonicParsing="false" prefWidth="300.0" text="Delete Appointment" />
                </children>

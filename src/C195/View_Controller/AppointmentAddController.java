@@ -31,27 +31,35 @@ public class AppointmentAddController implements Initializable {
     @FXML private TextField textFieldAppointmentTitle;
     private final ObservableList<String> startTimes, endTimes, appointmentTypes;
     private final DateTimeFormatter timeFormatter = DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT);
-    private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT);
+    private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT);
     @FXML private DatePicker datePickerAppointmentDate;
     @FXML private Label labelCurrentAppointment;
-    private Appointment modifyAppointment;
+    private Appointment appointmentToUpdate;
     private boolean isModify;
     private final ZoneId zoneID = ZoneId.systemDefault();
 
 
-    public AppointmentAddController(C195 main) {
+    public AppointmentAddController(C195 main, Appointment appointmentToUpdate) {
         this.main = main;
+        this.appointmentToUpdate = appointmentToUpdate;
         customers = FXCollections.observableArrayList();
         startTimes = FXCollections.observableArrayList();
         endTimes = FXCollections.observableArrayList();
         appointmentTypes = FXCollections.observableArrayList();
     }
 
-    @FXML public void buttonCancelClicked() throws IOException {
-        main.showAppointmentsScreen();
+    @FXML private void buttonCancelClicked() throws IOException {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Cancel modify customer?");
+        alert.setHeaderText("Are you sure you want to cancel?");
+        alert.setContentText("Are you sure?  Your changes will be lost.");
+        Optional<ButtonType> optional = alert.showAndWait();
+        if(optional.get() == ButtonType.OK) {
+            main.showAppointmentsScreen();
+        }
     }
 
-    public void populateTimes() {
+    private void populateTimes() {
         // Set up start times
         LocalTime time = LocalTime.of(8, 0);
         do {
@@ -129,8 +137,8 @@ public class AppointmentAddController implements Initializable {
             Optional<ButtonType> optional = alert.showAndWait();
             if(optional.get() == ButtonType.OK) {
                 Appointment appointmentToSave = new Appointment();
-                if(isModify) {
-                    appointmentToSave.setAppointmentID(modifyAppointment.getAppointmentID());
+                if(appointmentToUpdate != null) { // Modify appointment
+                    appointmentToSave.setAppointmentID(appointmentToSave.getAppointmentID());
                 }
                 // Convert times to LocalDateTime
                 LocalDate localDate = datePickerAppointmentDate.getValue();
@@ -154,6 +162,16 @@ public class AppointmentAddController implements Initializable {
         }
     }
 
+    private void populateAppointmentToModify() {
+        textFieldAppointmentTitle.setText(appointmentToUpdate.getTitle());
+        comboBoxType.setValue(appointmentToUpdate.getDescription());
+        LocalDateTime start = LocalDateTime.parse(appointmentToUpdate.getStart(), dateFormatter);
+        LocalDateTime end = LocalDateTime.parse(appointmentToUpdate.getEnd(), dateFormatter);
+        comboBoxStartTime.setValue(start.toLocalTime().format(timeFormatter));
+        comboBoxEndTime.setValue(end.toLocalTime().format(timeFormatter));
+        datePickerAppointmentDate.setValue(LocalDate.parse(appointmentToUpdate.getStart(), dateFormatter));
+    }
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // Initialize
@@ -166,6 +184,10 @@ public class AppointmentAddController implements Initializable {
             }
         });
 
+        // If is modify
+        if(appointmentToUpdate != null) {
+            populateAppointmentToModify();
+        }
         // Show customer table
         showCustomerDataTable();
         populateTimes();
