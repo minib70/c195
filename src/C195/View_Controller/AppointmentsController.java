@@ -17,6 +17,7 @@ import java.net.URL;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class AppointmentsController implements Initializable {
@@ -78,6 +79,26 @@ public class AppointmentsController implements Initializable {
 
     @FXML private void buttonNewAppointmentClicked() throws IOException {
         main.showAppointmentAddScreen(null);
+    }
+
+    @FXML private void buttonDeleteAppointmentClicked() {
+        ObservableList<Appointment> appointmentsToDelete = tableViewAppointments.getSelectionModel().getSelectedItems();
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Delete appointment?");
+        alert.setHeaderText("Are you sure you want to delete the following appointment(s)?");
+        StringBuilder apptsToDelete = new StringBuilder();
+        // Iterate through matching parts to get names to confirm
+        for(Appointment appointment: appointmentsToDelete) {
+            apptsToDelete.append(appointment.getTitle()).append("\n");
+        }
+        alert.setContentText("Remove Appointments:\n\n" + apptsToDelete);
+        Optional<ButtonType> optional = alert.showAndWait();
+        if(optional.get() == ButtonType.OK) {
+            for(Appointment appointment: appointmentsToDelete) {
+                DBMethods.deleteAppointment(appointment);
+            }
+            buttonRefreshDataClicked();
+        }
     }
 
     @FXML private void buttonModifyAppointmentClicked() throws IOException {

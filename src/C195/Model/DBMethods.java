@@ -290,4 +290,19 @@ public class DBMethods {
         }
     }
 
+    public static void deleteAppointment(Appointment appointmentToDelete) {
+        try {
+            PreparedStatement stmt = C195.dbConnection.prepareStatement(
+                    "DELETE appointment "
+                    + "FROM appointment "
+                    + "WHERE appointmentId = ?"
+            );
+            stmt.setInt(1, appointmentToDelete.getAppointmentID());
+            stmt.execute();
+        } catch (SQLException e) {
+            System.out.println("Issue with SQL");
+            e.printStackTrace();
+        }
+    }
+
 }
