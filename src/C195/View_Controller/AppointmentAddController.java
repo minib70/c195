@@ -31,6 +31,8 @@ public class AppointmentAddController implements Initializable {
     @FXML private TextField textFieldAppointmentTitle;
     private final ObservableList<String> startTimes, endTimes, appointmentTypes;
     private final DateTimeFormatter timeFormatter = DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT);
+    private final DateTimeFormatter dtfComboBox = DateTimeFormatter.ofPattern("h:mm a");
+    private final DateTimeFormatter dtfAppt = DateTimeFormatter.ofPattern("yyy-MM-dd h:mm a");
     private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT);
     @FXML private DatePicker datePickerAppointmentDate;
     @FXML private Label labelCurrentAppointment;
@@ -165,11 +167,11 @@ public class AppointmentAddController implements Initializable {
     private void populateAppointmentToModify() {
         textFieldAppointmentTitle.setText(appointmentToUpdate.getTitle());
         comboBoxType.setValue(appointmentToUpdate.getDescription());
-        LocalDateTime start = LocalDateTime.parse(appointmentToUpdate.getStart(), dateFormatter);
-        LocalDateTime end = LocalDateTime.parse(appointmentToUpdate.getEnd(), dateFormatter);
-        comboBoxStartTime.setValue(start.toLocalTime().format(timeFormatter));
-        comboBoxEndTime.setValue(end.toLocalTime().format(timeFormatter));
-        datePickerAppointmentDate.setValue(LocalDate.parse(appointmentToUpdate.getStart(), dateFormatter));
+        LocalDateTime start = LocalDateTime.parse(appointmentToUpdate.getLocalStart(), dtfAppt);
+        LocalDateTime end = LocalDateTime.parse(appointmentToUpdate.getLocalEnd(), dtfAppt);
+        comboBoxStartTime.setValue(dtfComboBox.format(start));
+        comboBoxEndTime.setValue(dtfComboBox.format(end));
+        datePickerAppointmentDate.setValue(start.toLocalDate());
     }
 
     @Override

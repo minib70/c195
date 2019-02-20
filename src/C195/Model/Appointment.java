@@ -5,9 +5,15 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+
 public class Appointment {
     private final IntegerProperty appointmentID, customerID;
-    private final StringProperty title, description, location, contact, start, end, customerName;
+    private final StringProperty title, description, location, contact, start, end, customerName, localStart, localEnd;
+    private final DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd h:mm a");
 
     public Appointment() {
         this.appointmentID = new SimpleIntegerProperty();
@@ -19,6 +25,8 @@ public class Appointment {
         this.start = new SimpleStringProperty();
         this.end = new SimpleStringProperty();
         this.customerName = new SimpleStringProperty();
+        this.localStart = new SimpleStringProperty();
+        this.localEnd = new SimpleStringProperty();
     }
 
     public int getAppointmentID() {
@@ -103,6 +111,9 @@ public class Appointment {
 
     public void setStart(String start) {
         this.start.set(start);
+        Instant localInstant = Instant.parse(this.start.get());
+        ZonedDateTime localZone = localInstant.atZone(ZoneId.systemDefault());
+        this.localStart.set(dtf.format(localZone));
     }
 
     public String getEnd() {
@@ -115,6 +126,9 @@ public class Appointment {
 
     public void setEnd(String end) {
         this.end.set(end);
+        Instant localInstant = Instant.parse(this.end.get());
+        ZonedDateTime localZone = localInstant.atZone(ZoneId.systemDefault());
+        this.localEnd.set(dtf.format(localZone));
     }
 
     public String getCustomerName() {
@@ -127,5 +141,21 @@ public class Appointment {
 
     public void setCustomerName(String customerName) {
         this.customerName.set(customerName);
+    }
+
+    public String getLocalStart() {
+        return localStart.get();
+    }
+
+    public StringProperty localStartProperty() {
+        return localStart;
+    }
+
+    public String getLocalEnd() {
+        return localEnd.get();
+    }
+
+    public StringProperty localEndProperty() {
+        return localEnd;
     }
 }

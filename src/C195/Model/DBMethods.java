@@ -7,16 +7,22 @@ import javafx.collections.ObservableList;
 import sun.nio.cs.ext.DoubleByte;
 
 import java.sql.*;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 
 public class DBMethods {
     private static final ZoneId zid = ZoneId.systemDefault();
     private static final DateTimeFormatter timeFormatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT);
+
+    private static ZonedDateTime localZoneToUTC(ZonedDateTime date) {
+        return date.withZoneSameInstant(ZoneId.of("UTC"));
+    }
+
+    private static ZonedDateTime utcToLocalZone(ZonedDateTime date) {
+        return date.withZoneSameInstant(ZoneId.systemDefault());
+    }
+
     public static ObservableList<Customer> getCustomers() {
         ObservableList<Customer> customers = FXCollections.observableArrayList();
         try {
@@ -204,15 +210,19 @@ public class DBMethods {
                 appt.setDescription(rs.getString("appointment.description"));
                 appt.setLocation(rs.getString("appointment.location"));
                 appt.setContact(rs.getString("appointment.contact"));
-                // Get timestamps and translate to local time
-                Timestamp startT = rs.getTimestamp("appointment.start");
-                ZonedDateTime startZ = startT.toLocalDateTime().atZone(ZoneId.of("UTC"));
-                ZonedDateTime startL = startZ.withZoneSameLocal(zid);
-                appt.setStart(startL.format(timeFormatter));
-                Timestamp endT = rs.getTimestamp("appointment.end");
-                ZonedDateTime endZ = endT.toLocalDateTime().atZone(ZoneId.of("UTC"));
-                ZonedDateTime endL = endZ.withZoneSameLocal(zid);
-                appt.setEnd(endL.format(timeFormatter));
+                Instant startInstant = rs.getTimestamp("appointment.start").toInstant();
+                appt.setStart(startInstant.toString());
+                Instant endInstant = rs.getTimestamp("appointment.end").toInstant();
+                appt.setEnd(endInstant.toString());
+                // Timestamp startTimestamp = rs.getTimestamp("appointment.start");
+                // LocalDateTime startUTC = startTimestamp.toLocalDateTime();
+                // ZonedDateTime startLocalZone = startUTC.atZone(ZoneId.of("UTC"));
+                // ZonedDateTime startL = startLocalZone.withZoneSameLocal(zid);
+                // appt.setStart(startLocalZone.format(timeFormatter));
+                //Timestamp endTimestamp = rs.getTimestamp("appointment.end");
+                //LocalDateTime endUTC = endTimestamp.toLocalDateTime();
+                //ZonedDateTime endLocalZone = endUTC.atZone(ZoneId.of("UTC"));
+                //appt.setEnd(endLocalZone.format(timeFormatter));
                 appt.setCustomerName(rs.getString("customer.customerName"));
                 appointments.add(appt);
             }
@@ -240,6 +250,7 @@ public class DBMethods {
                 stmt.setString(1, appointmentToSave.getTitle());
                 stmt.setInt(2, customerId);
                 stmt.setString(3, appointmentToSave.getDescription());
+                LocalDateTime startLocalZone = LocalDateTime.parse(appointmentToSave.getStart(), timeFormatter);
                 ZonedDateTime startZ = ZonedDateTime.parse(appointmentToSave.getStart());
                 LocalDateTime start = startZ.toLocalDateTime();
                 Timestamp startT = Timestamp.valueOf(start);

@@ -51,13 +51,13 @@ public class AppointmentsController implements Initializable {
         // Wrap filtered list in sorted list
         SortedList<Appointment> sortedAppointments = new SortedList<>(filteredAppointments);
 
-        // Bind sorted list to TableVIew
+        // Bind sorted list to TableView
         sortedAppointments.comparatorProperty().bind(tableViewAppointments.comparatorProperty());
         columnAppointmentsTitle.setCellValueFactory(new PropertyValueFactory<>("title"));
         columnAppointmentsDescription.setCellValueFactory(new PropertyValueFactory<>("description"));
         columnAppointmentsCustomer.setCellValueFactory(new PropertyValueFactory<>("customerName"));
-        columnAppointmentsStart.setCellValueFactory(new PropertyValueFactory<>("start"));
-        columnAppointmentsEnd.setCellValueFactory(new PropertyValueFactory<>("end"));
+        columnAppointmentsStart.setCellValueFactory(new PropertyValueFactory<>("localStart"));
+        columnAppointmentsEnd.setCellValueFactory(new PropertyValueFactory<>("localEnd"));
         tableViewAppointments.setItems(appointments);
         tableViewAppointments.refresh();
     }
