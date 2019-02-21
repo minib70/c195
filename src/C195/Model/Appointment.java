@@ -143,6 +143,14 @@ public class Appointment {
         this.customerName.set(customerName);
     }
 
+    public void setLocalStart(String localStart) {
+        this.localStart.set(localStart);
+        Instant localInstant = Instant.parse(localStart);
+        ZonedDateTime startUTC = localInstant.atZone(ZoneId.of("UTC"));
+        Instant startInstantUTC = startUTC.toInstant();
+        this.start.set(startInstantUTC.toString());
+    }
+
     public String getLocalStart() {
         return localStart.get();
     }
@@ -153,6 +161,14 @@ public class Appointment {
 
     public String getLocalEnd() {
         return localEnd.get();
+    }
+
+    public void setLocalEnd(String localEnd) {
+        this.localEnd.set(localEnd);
+        Instant localInstant = Instant.parse(localEnd);
+        ZonedDateTime endUTC = localInstant.atZone(ZoneId.of("UTC"));
+        Instant endInstantUTC = endUTC.toInstant();
+        this.end.set(endInstantUTC.toString());
     }
 
     public StringProperty localEndProperty() {

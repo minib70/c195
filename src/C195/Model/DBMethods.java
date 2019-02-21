@@ -14,6 +14,7 @@ import java.time.format.FormatStyle;
 public class DBMethods {
     private static final ZoneId zid = ZoneId.systemDefault();
     private static final DateTimeFormatter timeFormatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT);
+    private static final DateTimeFormatter dtfInstant = DateTimeFormatter.ofPattern("yyyy-MM-dd h:mm a");
 
     private static ZonedDateTime localZoneToUTC(ZonedDateTime date) {
         return date.withZoneSameInstant(ZoneId.of("UTC"));
@@ -250,14 +251,11 @@ public class DBMethods {
                 stmt.setString(1, appointmentToSave.getTitle());
                 stmt.setInt(2, customerId);
                 stmt.setString(3, appointmentToSave.getDescription());
-                LocalDateTime startLocalZone = LocalDateTime.parse(appointmentToSave.getStart(), timeFormatter);
-                ZonedDateTime startZ = ZonedDateTime.parse(appointmentToSave.getStart());
-                LocalDateTime start = startZ.toLocalDateTime();
-                Timestamp startT = Timestamp.valueOf(start);
+                Instant startInstant = Instant.parse(appointmentToSave.getStart());
+                Timestamp startT = Timestamp.from(startInstant);
                 stmt.setTimestamp(4, startT);
-                ZonedDateTime endZ = ZonedDateTime.parse(appointmentToSave.getEnd());
-                LocalDateTime end = endZ.toLocalDateTime();
-                Timestamp endT = Timestamp.valueOf(end);
+                Instant endInstant = Instant.parse(appointmentToSave.getEnd());
+                Timestamp endT = Timestamp.from(endInstant);
                 stmt.setTimestamp(5, endT);
                 stmt.setTimestamp(6, new Timestamp(System.currentTimeMillis()));
                 stmt.setString(7, currentUser);
@@ -281,13 +279,17 @@ public class DBMethods {
                 newApt.setString(4, "");
                 newApt.setString(5, "");
                 newApt.setString(6, "");
-                ZonedDateTime startZ = ZonedDateTime.parse(appointmentToSave.getStart());
-                LocalDateTime start = startZ.toLocalDateTime();
-                Timestamp startT = Timestamp.valueOf(start);
+                //ZonedDateTime startZ = ZonedDateTime.parse(appointmentToSave.getStart());
+                //LocalDateTime start = startZ.toLocalDateTime();
+                //ZonedDateTime startUTC = ZonedDateTime.parse(appointmentToSave.getStart(), dtfInstant);
+                Instant startInstant = Instant.parse(appointmentToSave.getStart());
+                Timestamp startT = Timestamp.from(startInstant);
                 newApt.setTimestamp(7, startT);
-                ZonedDateTime endZ = ZonedDateTime.parse(appointmentToSave.getEnd());
-                LocalDateTime end = endZ.toLocalDateTime();
-                Timestamp endT = Timestamp.valueOf(end);
+                //ZonedDateTime endZ = ZonedDateTime.parse(appointmentToSave.getEnd());
+                //LocalDateTime end = endZ.toLocalDateTime();
+                //ZonedDateTime endUTC = ZonedDateTime.parse(appointmentToSave.getEnd(), dtfInstant);
+                Instant endInstant = Instant.parse(appointmentToSave.getEnd());
+                Timestamp endT = Timestamp.from(endInstant);
                 newApt.setTimestamp(8, endT);
                 newApt.setTimestamp(9, new Timestamp(System.currentTimeMillis()));
                 newApt.setString(10, currentUser);

@@ -6,6 +6,7 @@
 
 package C195.Model;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
@@ -70,6 +71,15 @@ public class Validation {
             }
         } catch(Exception e) {
             errors.append("Issue parsing time.  Very broken");
+        }
+        return errors.toString();
+    }
+
+    public static String validateDatePicker(LocalDate datePicker) {
+        StringBuilder errors = new StringBuilder();
+        // Ensure datepicker isn't empty
+        if(datePicker == null) {
+            errors.append("Date value is empty.");
         }
         return errors.toString();
     }

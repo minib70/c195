@@ -32,7 +32,7 @@ public class AppointmentAddController implements Initializable {
     private final ObservableList<String> startTimes, endTimes, appointmentTypes;
     private final DateTimeFormatter timeFormatter = DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT);
     private final DateTimeFormatter dtfComboBox = DateTimeFormatter.ofPattern("h:mm a");
-    private final DateTimeFormatter dtfAppt = DateTimeFormatter.ofPattern("yyy-MM-dd h:mm a");
+    private final DateTimeFormatter dtfAppt = DateTimeFormatter.ofPattern("yyyy-MM-dd h:mm a");
     private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT);
     @FXML private DatePicker datePickerAppointmentDate;
     @FXML private Label labelCurrentAppointment;
@@ -117,12 +117,15 @@ public class AppointmentAddController implements Initializable {
     @FXML private void saveButtonClicked() throws IOException {
         String nameValidation = Validation.validateName(textFieldAppointmentTitle.getText());
         String startEndValidation = Validation.validateStartEndTimes(comboBoxStartTime.getSelectionModel().getSelectedItem(), comboBoxEndTime.getSelectionModel().getSelectedItem());
+        String datePickerValidation = Validation.validateDatePicker(datePickerAppointmentDate.getValue());
+
 
         // Check for errors
         StringBuilder errors = new StringBuilder();
         errors.append(validationErrors(textFieldAppointmentTitle, nameValidation));
         errors.append(validationErrors(comboBoxStartTime, startEndValidation));
         errors.append(validationErrors(comboBoxEndTime, startEndValidation));
+        errors.append(validationErrors(datePickerAppointmentDate, datePickerValidation));
 
         // Alert if errors, if not continue
         if(errors.length() >= 1) {
@@ -148,14 +151,16 @@ public class AppointmentAddController implements Initializable {
                 LocalTime startLocal = LocalTime.parse(comboBoxStartTime.getSelectionModel().getSelectedItem(), timeFormatter);
                 LocalTime endLocal = LocalTime.parse(comboBoxEndTime.getSelectionModel().getSelectedItem(), timeFormatter);
                 LocalDateTime startLocalDate = LocalDateTime.of(localDate, startLocal);
+                System.out.println("Values from start before instant: " + dtfAppt.format(startLocalDate));
+                Instant startLocalInstant = Instant.from(startLocalDate.atZone(zoneID));
                 LocalDateTime endLocalDate = LocalDateTime.of(localDate, endLocal);
+                System.out.println("Values from end before instant: " + dtfAppt.format(endLocalDate));
+                Instant endLocalInstant = Instant.from(endLocalDate.atZone(zoneID));
                 // Convert to UTC
-                ZonedDateTime startUTC = startLocalDate.atZone(zoneID).withZoneSameInstant(ZoneId.of("UTC"));
-                ZonedDateTime endUTC = endLocalDate.atZone(zoneID).withZoneSameInstant(ZoneId.of("UTC"));
 
                 appointmentToSave.setTitle(textFieldAppointmentTitle.getText());
-                appointmentToSave.setStart(startUTC.toString());
-                appointmentToSave.setEnd(endUTC.toString());
+                appointmentToSave.setLocalStart(startLocalInstant.toString());
+                appointmentToSave.setLocalEnd(endLocalInstant.toString());
                 appointmentToSave.setDescription(comboBoxType.getSelectionModel().getSelectedItem());
                 DBMethods.saveAppointment(appointmentToSave, main.currentUser.getUsername(), tableViewCustomers.getSelectionModel().getSelectedItem().getCustomerId());
                 labelCurrentAppointment.setText(null);
