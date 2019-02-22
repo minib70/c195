@@ -66,7 +66,7 @@ public class LoginController implements Initializable {
             User inputUser = new User(inputUsername,inputPassword);
             validUser = tryLogin(inputUser);
             if(validUser == null) { // login was incorrect or user not found
-                Alerts.warningAlert("Invalid Login or user not found.\nPlease try again.");
+                Alerts.warningAlert(main.rb.getString("login_error_badlogin"));
             } else { // login was valid
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle(main.rb.getString("login_success_title"));
