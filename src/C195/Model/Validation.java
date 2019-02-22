@@ -10,13 +10,16 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 public class Validation {
+    private static ResourceBundle rb = ResourceBundle.getBundle("lang", Locale.getDefault());;
     public static String validateName(String name) {
         StringBuilder errors = new StringBuilder();
         // Ensure name is not null
         if(name == null || name.isEmpty()) {
-            errors.append("Name must contain at least 1 character.");
+            errors.append(rb.getString("login_error_noname"));
         }
         return errors.toString();
     }
@@ -25,7 +28,7 @@ public class Validation {
         StringBuilder errors = new StringBuilder();
         // Ensure name is not null
         if(password == null || password.isEmpty()) {
-            errors.append("Password must contain at least 1 character.");
+            errors.append(rb.getString("login_error_nopassword"));
         }
         return errors.toString();
     }

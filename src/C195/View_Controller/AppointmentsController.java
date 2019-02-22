@@ -43,7 +43,7 @@ public class AppointmentsController implements Initializable {
         appointments = DBMethods.getAppointments();
         // Load up weekly and monthly appointments
         ZonedDateTime now = ZonedDateTime.now();
-        ZonedDateTime nextWeek = now.plusDays(7);
+        ZonedDateTime nextWeek = now.plusWeeks(1);
         ZonedDateTime nextMonth = now.plusMonths(1);
         for(Appointment apt: appointments) {
             ZonedDateTime aptStart = ZonedDateTime.from(Instant.parse(apt.getStart()).atZone(ZoneId.systemDefault()));

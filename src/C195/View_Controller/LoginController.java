@@ -31,6 +31,7 @@ public class LoginController implements Initializable {
         this.main = main;
     }
 
+    @SuppressWarnings("Duplicates")
     public void onEnter() throws IOException {
         boolean usernameIsValid = true;
         boolean passwordIsValid = true;
@@ -68,9 +69,9 @@ public class LoginController implements Initializable {
                 Alerts.warningAlert("Invalid Login or user not found.\nPlease try again.");
             } else { // login was valid
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("Login Successful!");
-                alert.setHeaderText("Well done.  You guessed the password!");
-                alert.setContentText(validUser.getPassword() + " is a good password.");
+                alert.setTitle(main.rb.getString("login_success_title"));
+                alert.setHeaderText(main.rb.getString("login_success_header"));
+                alert.setContentText(main.rb.getString("login_success_content"));
                 alert.showAndWait();
                 // Sets current user for the current session
                 main.currentUser = validUser;
