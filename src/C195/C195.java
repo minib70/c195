@@ -15,6 +15,7 @@ import javafx.stage.Stage;
 import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
+import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -25,6 +26,7 @@ public class C195 extends Application {
     public ResourceBundle rb;
     public static Connection dbConnection;
     public User currentUser;
+    public static final DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd h:mm a");
 
     @Override
     public void start(Stage primaryStage) throws Exception {

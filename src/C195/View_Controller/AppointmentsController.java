@@ -14,15 +14,13 @@ import javafx.scene.control.cell.PropertyValueFactory;
 
 import java.io.IOException;
 import java.net.URL;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.time.*;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class AppointmentsController implements Initializable {
     private C195 main;
-    private ObservableList<Appointment> appointments;
+    private ObservableList<Appointment> appointments, weeklyAppointments, monthlyAppointments;
     @FXML private Label labelAppointmentTitle;
     @FXML private TableView<Appointment> tableViewAppointments;
     @FXML private TableColumn<Appointment, String> columnAppointmentsTitle;
@@ -37,15 +35,40 @@ public class AppointmentsController implements Initializable {
     public AppointmentsController(C195 main) {
         this.main = main;
         this.appointments = FXCollections.observableArrayList();
+        this.weeklyAppointments = FXCollections.observableArrayList();
+        this.monthlyAppointments = FXCollections.observableArrayList();
     }
 
     private void loadAppointments() {
         appointments = DBMethods.getAppointments();
+        // Load up weekly and monthly appointments
+        ZonedDateTime now = ZonedDateTime.now();
+        ZonedDateTime nextWeek = now.plusDays(7);
+        ZonedDateTime nextMonth = now.plusMonths(1);
+        for(Appointment apt: appointments) {
+            ZonedDateTime aptStart = ZonedDateTime.from(Instant.parse(apt.getStart()).atZone(ZoneId.systemDefault()));
+            // Weekly
+            if(aptStart.isBefore(nextWeek) && !aptStart.isBefore(now)) {
+                weeklyAppointments.add(apt);
+            }
+            // Monthly
+            if(aptStart.isBefore(nextMonth) && !aptStart.isBefore(now)) {
+                monthlyAppointments.add(apt);
+            }
+        }
         showApptData();
     }
 
     private void showApptData() {
-        FilteredList<Appointment> filteredAppointments = new FilteredList<>(appointments, p -> true);
+        ObservableList<Appointment> appts;
+        if(radioAllAppointments.isSelected()) {
+            appts = appointments;
+        } else if(radioWeeklyAppointments.isSelected()) {
+            appts = weeklyAppointments;
+        } else {
+            appts = monthlyAppointments;
+        }
+        FilteredList<Appointment> filteredAppointments = new FilteredList<>(appts, p -> true);
         //todo: add search?
 
         // Wrap filtered list in sorted list
@@ -58,7 +81,7 @@ public class AppointmentsController implements Initializable {
         columnAppointmentsCustomer.setCellValueFactory(new PropertyValueFactory<>("customerName"));
         columnAppointmentsStart.setCellValueFactory(new PropertyValueFactory<>("localStart"));
         columnAppointmentsEnd.setCellValueFactory(new PropertyValueFactory<>("localEnd"));
-        tableViewAppointments.setItems(appointments);
+        tableViewAppointments.setItems(sortedAppointments);
         tableViewAppointments.refresh();
     }
 
@@ -69,7 +92,10 @@ public class AppointmentsController implements Initializable {
     @FXML private void buttonRefreshDataClicked() {
         // Clear existing data
         appointments.clear();
+        weeklyAppointments.clear();
+        monthlyAppointments.clear();
         loadAppointments();
+
     }
 
     @FXML private void userClickedOnAppointmentTable() {
@@ -119,13 +145,7 @@ public class AppointmentsController implements Initializable {
         // Listener for radio buttons
         toggleGroupAppointmentView.selectedToggleProperty().addListener((observable, oldValue, newValue) -> {
             if(toggleGroupAppointmentView.selectedToggleProperty() != null) {
-                if(radioAllAppointments.isSelected()) {
-                    // TODO: Write action
-                } else if(radioMonthlyAppointments.isSelected()) {
-                    // TODO: Write action
-                } else if(radioWeeklyAppointments.isSelected()) {
-                    //TODO: Write action.
-                }
+                showApptData();
             }
         });
 
