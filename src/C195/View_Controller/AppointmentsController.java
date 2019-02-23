@@ -15,12 +15,14 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import java.io.IOException;
 import java.net.URL;
 import java.time.*;
+import java.util.ArrayList;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class AppointmentsController implements Initializable {
     private C195 main;
     private ObservableList<Appointment> appointments, weeklyAppointments, monthlyAppointments;
+    private ArrayList<String> appointmentAlertList;
     @FXML private Label labelAppointmentTitle;
     @FXML private TableView<Appointment> tableViewAppointments;
     @FXML private TableColumn<Appointment, String> columnAppointmentsTitle;
@@ -37,14 +39,16 @@ public class AppointmentsController implements Initializable {
         this.appointments = FXCollections.observableArrayList();
         this.weeklyAppointments = FXCollections.observableArrayList();
         this.monthlyAppointments = FXCollections.observableArrayList();
+        this.appointmentAlertList = new ArrayList<>();
     }
 
     private void loadAppointments() {
         appointments = DBMethods.getAppointments();
         // Load up weekly and monthly appointments
-        ZonedDateTime now = ZonedDateTime.now();
+        ZonedDateTime now = ZonedDateTime.now(ZoneId.systemDefault());
         ZonedDateTime nextWeek = now.plusWeeks(1);
         ZonedDateTime nextMonth = now.plusMonths(1);
+        ZonedDateTime fifteenMinutes = now.plusMinutes(15);;
         for(Appointment apt: appointments) {
             ZonedDateTime aptStart = ZonedDateTime.from(Instant.parse(apt.getStart()).atZone(ZoneId.systemDefault()));
             // Weekly
@@ -54,6 +58,10 @@ public class AppointmentsController implements Initializable {
             // Monthly
             if(aptStart.isBefore(nextMonth) && !aptStart.isBefore(now)) {
                 monthlyAppointments.add(apt);
+            }
+            // 15 minute alert
+            if(aptStart.isBefore(fifteenMinutes) && !aptStart.isBefore(now)) {
+                appointmentAlertList.add(apt.getTitle());
             }
         }
         showApptData();
@@ -156,5 +164,14 @@ public class AppointmentsController implements Initializable {
 
         // Populate Appointments
         loadAppointments();
+
+        // Alert if an appointment starts within 15 minutes
+        if(!appointmentAlertList.isEmpty()) {
+            StringBuilder alert = new StringBuilder();
+            for(String apt: appointmentAlertList) {
+                alert.append(apt + "\n");
+            }
+            Alerts.reminderAlert(alert.toString());
+        }
     }
 }

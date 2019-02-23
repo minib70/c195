@@ -40,6 +40,8 @@ public class C195 extends Application {
         // This sets the local for the project
         //Locale.setDefault(new Locale("nl", "NL"));
         Locale.setDefault(new Locale("en", "US"));
+        // Optionally set the timezone.
+
         rb = ResourceBundle.getBundle("lang", Locale.getDefault());
         rootLayout = new VBox();
 

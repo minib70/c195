@@ -14,4 +14,12 @@ class Alerts {
         alert.setContentText(message);
         alert.showAndWait();
     }
+
+    static void reminderAlert(String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Upcoming Appointments");
+        alert.setHeaderText("Reminder");
+        alert.setContentText("The following appointments are coming up within 15 minutes:\n\n" + message);
+        alert.showAndWait();
+    }
 }
