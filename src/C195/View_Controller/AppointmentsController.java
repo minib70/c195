@@ -112,7 +112,7 @@ public class AppointmentsController implements Initializable {
     }
 
     @FXML private void buttonNewAppointmentClicked() throws IOException {
-        main.showAppointmentAddScreen(null);
+        main.showAppointmentAddScreen(null, appointments);
     }
 
     @FXML private void buttonDeleteAppointmentClicked() {
@@ -137,7 +137,7 @@ public class AppointmentsController implements Initializable {
 
     @FXML private void buttonModifyAppointmentClicked() throws IOException {
         if(tableViewAppointments.getSelectionModel().getSelectedItems().size() == 1){
-            main.showAppointmentAddScreen(tableViewAppointments.getSelectionModel().getSelectedItem());
+            main.showAppointmentAddScreen(tableViewAppointments.getSelectionModel().getSelectedItem(), appointments);
         } else {
             Alerts.warningAlert("Can only modify one item at a time.");
         }

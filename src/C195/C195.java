@@ -5,6 +5,7 @@ import C195.Model.User;
 import C195.Util.DB;
 import C195.View_Controller.*;
 import javafx.application.Application;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
@@ -137,11 +138,11 @@ public class C195 extends Application {
     }
 
     @SuppressWarnings("Duplicates")
-    public void showAppointmentAddScreen(Appointment appointmentToUpdate) throws IOException {
+    public void showAppointmentAddScreen(Appointment appointmentToUpdate, ObservableList<Appointment> existingAppointments) throws IOException {
         // Instantiate the controller
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(C195.class.getResource("View_controller/AppointmentAdd.fxml"));
-        AppointmentAddController controller = new AppointmentAddController(this, appointmentToUpdate);
+        AppointmentAddController controller = new AppointmentAddController(this, appointmentToUpdate, existingAppointments);
         loader.setController(controller);
 
         AnchorPane appointment = loader.load();

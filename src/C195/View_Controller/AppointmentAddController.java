@@ -37,13 +37,15 @@ public class AppointmentAddController implements Initializable {
     @FXML private DatePicker datePickerAppointmentDate;
     @FXML private Label labelCurrentAppointment;
     private Appointment appointmentToUpdate;
+    private ObservableList<Appointment> existingAppointments;
     private boolean isModify;
     private final ZoneId zoneID = ZoneId.systemDefault();
 
 
-    public AppointmentAddController(C195 main, Appointment appointmentToUpdate) {
+    public AppointmentAddController(C195 main, Appointment appointmentToUpdate, ObservableList<Appointment> existingAppointments) {
         this.main = main;
         this.appointmentToUpdate = appointmentToUpdate;
+        this.existingAppointments = existingAppointments;
         customers = FXCollections.observableArrayList();
         startTimes = FXCollections.observableArrayList();
         endTimes = FXCollections.observableArrayList();
@@ -86,7 +88,6 @@ public class AppointmentAddController implements Initializable {
         if(tableViewCustomers.getItems().size() > 0) {
             tableViewCustomers.getSelectionModel().clearAndSelect(0);
         }
-        //TODO: select current customer from list.
     }
 
     private void populateAppointmentTypes() {
@@ -130,43 +131,65 @@ public class AppointmentAddController implements Initializable {
         // Alert if errors, if not continue
         if(errors.length() >= 1) {
             Alerts.warningAlert(errors.toString());
-        } else { // no errors
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-            if(isModify) {
-                alert.setTitle("Save modified Appointment - " + textFieldAppointmentTitle.getText());
-                alert.setContentText("When you save, it will overwrite existing appointment.");
-            } else {
-                alert.setTitle("Save new Appointment - " + textFieldAppointmentTitle.getText());
-                alert.setContentText("Saving new Appointment.  Are you sure?");
-            }
-            alert.setHeaderText("Are you sure you want to save?");
-            Optional<ButtonType> optional = alert.showAndWait();
-            if(optional.get() == ButtonType.OK) {
-                Appointment appointmentToSave = new Appointment();
-                if(isModify) { // Modify appointment
-                    appointmentToSave.setAppointmentID(appointmentToUpdate.getAppointmentID());
-                }
-                // Convert times to LocalDateTime
-                LocalDate localDate = datePickerAppointmentDate.getValue();
-                LocalTime startLocal = LocalTime.parse(comboBoxStartTime.getSelectionModel().getSelectedItem(), timeFormatter);
-                LocalTime endLocal = LocalTime.parse(comboBoxEndTime.getSelectionModel().getSelectedItem(), timeFormatter);
-                LocalDateTime startLocalDate = LocalDateTime.of(localDate, startLocal);
-                System.out.println("Values from start before instant: " + dtfAppt.format(startLocalDate));
-                Instant startLocalInstant = Instant.from(startLocalDate.atZone(zoneID));
-                LocalDateTime endLocalDate = LocalDateTime.of(localDate, endLocal);
-                System.out.println("Values from end before instant: " + dtfAppt.format(endLocalDate));
-                Instant endLocalInstant = Instant.from(endLocalDate.atZone(zoneID));
-                // Convert to UTC
+        } else { // Check appointment times
+            // Check for overlapping appointments
+            boolean isOverlap = false;
+            for(Appointment a: existingAppointments) {
+                LocalDate date = datePickerAppointmentDate.getValue();
+                LocalDateTime nStart = combineDateAndTime(comboBoxStartTime.getSelectionModel().getSelectedItem(), date);
+                LocalDateTime nEnd = combineDateAndTime(comboBoxEndTime.getSelectionModel().getSelectedItem(), date);
+                LocalDateTime eStart = LocalDateTime.parse(a.getLocalStart(), C195.dtf);
+                LocalDateTime eEnd = LocalDateTime.parse(a.getLocalEnd(), C195.dtf);
 
-                appointmentToSave.setTitle(textFieldAppointmentTitle.getText());
-                appointmentToSave.setLocalStart(startLocalInstant.toString());
-                appointmentToSave.setLocalEnd(endLocalInstant.toString());
-                appointmentToSave.setDescription(comboBoxType.getSelectionModel().getSelectedItem());
-                DBMethods.saveAppointment(appointmentToSave, main.currentUser.getUsername(), tableViewCustomers.getSelectionModel().getSelectedItem().getCustomerId());
-                labelCurrentAppointment.setText(null);
-                main.showAppointmentsScreen();
+                // Check for overlaps
+                // if New Appointment start or end overlaps any existing appointment
+                if(nStart.isAfter(eStart) && nStart.isBefore(eEnd) || nEnd.isAfter(eStart) && nEnd.isBefore(eEnd)) {
+                    isOverlap = true;
+                    break;
+                }
+            }
+            if(isOverlap) {
+                errors.append("New appointment overlaps one or more existing appointments.  Cannot overlap.");
+                Alerts.warningAlert(errors.toString());
+            } else {
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                if(isModify) {
+                    alert.setTitle("Save modified Appointment - " + textFieldAppointmentTitle.getText());
+                    alert.setContentText("When you save, it will overwrite existing appointment.");
+                } else {
+                    alert.setTitle("Save new Appointment - " + textFieldAppointmentTitle.getText());
+                    alert.setContentText("Saving new Appointment.  Are you sure?");
+                }
+                alert.setHeaderText("Are you sure you want to save?");
+                Optional<ButtonType> optional = alert.showAndWait();
+                if(optional.get() == ButtonType.OK) {
+                    Appointment appointmentToSave = new Appointment();
+                    if(isModify) { // Modify appointment
+                        appointmentToSave.setAppointmentID(appointmentToUpdate.getAppointmentID());
+                    }
+                    // Convert times to LocalDateTime
+                    LocalDate localDate = datePickerAppointmentDate.getValue();
+                    LocalDateTime startLocalDate = combineDateAndTime(comboBoxStartTime.getSelectionModel().getSelectedItem(), localDate);
+                    Instant startLocalInstant = Instant.from(startLocalDate.atZone(zoneID));
+                    LocalDateTime endLocalDate = combineDateAndTime(comboBoxEndTime.getSelectionModel().getSelectedItem(), localDate);
+                    Instant endLocalInstant = Instant.from(endLocalDate.atZone(zoneID));
+
+                    // Create new appointment
+                    appointmentToSave.setTitle(textFieldAppointmentTitle.getText());
+                    appointmentToSave.setLocalStart(startLocalInstant.toString());
+                    appointmentToSave.setLocalEnd(endLocalInstant.toString());
+                    appointmentToSave.setDescription(comboBoxType.getSelectionModel().getSelectedItem());
+                    DBMethods.saveAppointment(appointmentToSave, main.currentUser.getUsername(), tableViewCustomers.getSelectionModel().getSelectedItem().getCustomerId());
+                    labelCurrentAppointment.setText(null);
+                    main.showAppointmentsScreen();
+                }
             }
         }
+    }
+
+    private LocalDateTime combineDateAndTime(String time, LocalDate date) {
+        LocalTime lTime = LocalTime.parse(time, timeFormatter);
+        return LocalDateTime.of(date, lTime);
     }
 
     private void populateAppointmentToModify() {
