@@ -3,6 +3,7 @@ package C195.View_Controller;
 import C195.C195;
 import C195.Model.User;
 import C195.Model.Validation;
+import com.sun.jmx.remote.util.ClassLogger;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
@@ -15,6 +16,11 @@ import java.net.URL;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
 
 public class LoginController implements Initializable {
@@ -26,6 +32,7 @@ public class LoginController implements Initializable {
     @FXML private TextField textFieldUsername, textFieldPassword;
     @FXML private Label labelUsername, labelPassword, labelInstructions;
     @FXML private Button buttonLogin;
+    private final DateTimeFormatter loggingDTF = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss(z)");
 
     public LoginController(C195 main) {
         this.main = main;
@@ -66,6 +73,7 @@ public class LoginController implements Initializable {
             User inputUser = new User(inputUsername,inputPassword);
             validUser = tryLogin(inputUser);
             if(validUser == null) { // login was incorrect or user not found
+                logLogin(inputUser.getUsername(), false);
                 Alerts.warningAlert(main.rb.getString("login_error_badlogin"));
             } else { // login was valid
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -75,11 +83,23 @@ public class LoginController implements Initializable {
                 alert.showAndWait();
                 // Sets current user for the current session
                 main.currentUser = validUser;
+                logLogin(inputUser.getUsername(), true);
                 main.rootLayoutController.setLoggedInUser(validUser.getUsername());
                 main.showAppointmentsScreen();
             }
         } else {
             Alerts.warningAlert(errors.toString());
+        }
+    }
+
+    private void logLogin(String username, boolean wasSuccessful) throws IOException{
+        ZonedDateTime now = ZonedDateTime.now(ZoneId.systemDefault());
+        if(wasSuccessful) {
+            C195.bufferedWriter.write(now.format(loggingDTF) + " SUCCESSFUL login for: " + username);
+            C195.bufferedWriter.newLine();
+        } else {
+            C195.bufferedWriter.write(now.format(loggingDTF) + " FAILED login for: " + username);
+            C195.bufferedWriter.newLine();
         }
     }
 

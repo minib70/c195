@@ -12,7 +12,9 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.Connection;
 import java.time.format.DateTimeFormatter;
@@ -27,6 +29,8 @@ public class C195 extends Application {
     public static Connection dbConnection;
     public User currentUser;
     public static final DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd h:mm a");
+    public static BufferedWriter bufferedWriter;
+    private static String logFile = "logging.txt";
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -52,8 +56,19 @@ public class C195 extends Application {
     public static void main(String[] args) {
         DB.connectDB();
         dbConnection = DB.getDbConnection();
+        setupLogging();
         launch(args);
+        // Disconnect DB
         DB.disconnect();
+
+        // close BufferedWriter
+        try {
+            if(bufferedWriter != null) {
+                bufferedWriter.close();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void initRootLayout() throws IOException {
@@ -133,5 +148,21 @@ public class C195 extends Application {
         rootLayout.getChildren().remove(1);
         rootLayout.getChildren().add(appointment);
         rootLayoutController.showViewMenu();
+    }
+
+    private static void setupLogging() {
+        bufferedWriter = null;
+        try {
+            File file = new File(logFile);
+            // create file if it doesn't exist
+            if(!file.exists()) {
+                file.createNewFile();
+            }
+
+            FileWriter fw = new FileWriter(file, true);
+            bufferedWriter = new BufferedWriter(fw);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
