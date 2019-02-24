@@ -4,6 +4,7 @@ import C195.C195;
 import com.mysql.cj.protocol.Resultset;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.chart.XYChart;
 import sun.nio.cs.ext.DoubleByte;
 
 import java.sql.*;
@@ -344,4 +345,18 @@ public class DBMethods {
         return appointments;
     }
 
+    /*public static ObservableList<XYChart.Data<String, Integer>> getAppointmentByMonthReport() {
+        ObservableList<XYChart.Data<String, Integer>> apptByMonthData = FXCollections.observableArrayList();
+
+        try {
+            PreparedStatement stmt = C195.dbConnection.prepareStatement(
+                    "SELECT"
+            );
+        } catch(SQLException e) {
+            System.out.println("Issue with SQL");
+            e.printStackTrace();
+        }
+
+        return apptByMonthData;
+    }*/
 }
