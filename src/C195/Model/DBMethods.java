@@ -191,6 +191,7 @@ public class DBMethods {
         }
     }
 
+    @SuppressWarnings("Duplicates")
     public static ObservableList<Appointment> getAppointments() {
         ObservableList<Appointment> appointments = FXCollections.observableArrayList();
 
@@ -215,15 +216,6 @@ public class DBMethods {
                 appt.setStart(startInstant.toString());
                 Instant endInstant = rs.getTimestamp("appointment.end").toInstant();
                 appt.setEnd(endInstant.toString());
-                // Timestamp startTimestamp = rs.getTimestamp("appointment.start");
-                // LocalDateTime startUTC = startTimestamp.toLocalDateTime();
-                // ZonedDateTime startLocalZone = startUTC.atZone(ZoneId.of("UTC"));
-                // ZonedDateTime startL = startLocalZone.withZoneSameLocal(zid);
-                // appt.setStart(startLocalZone.format(timeFormatter));
-                //Timestamp endTimestamp = rs.getTimestamp("appointment.end");
-                //LocalDateTime endUTC = endTimestamp.toLocalDateTime();
-                //ZonedDateTime endLocalZone = endUTC.atZone(ZoneId.of("UTC"));
-                //appt.setEnd(endLocalZone.format(timeFormatter));
                 appt.setCustomerName(rs.getString("customer.customerName"));
                 appointments.add(appt);
             }
@@ -241,7 +233,6 @@ public class DBMethods {
         if (appointmentToSave.getAppointmentID() > 0) {
             // This is modify so we need to match it to an existing record
             try {
-                System.out.println("Modifying appointment.");
                 PreparedStatement stmt = C195.dbConnection.prepareStatement(
                         "UPDATE appointment "
                         + "SET appointment.title = ?, appointment.customerId = ?, appointment.description = ?, "
@@ -267,7 +258,6 @@ public class DBMethods {
             }
         } else {
             try {
-                System.out.println("New Apppointment");
                 PreparedStatement newApt = C195.dbConnection.prepareStatement(
                         "INSERT INTO appointment "
                                 + "(customerId, title, description, location, contact, url, start, end, createDate, createdBy, lastUpdate, lastUpdateBy)  "
@@ -316,6 +306,42 @@ public class DBMethods {
             System.out.println("Issue with SQL");
             e.printStackTrace();
         }
+    }
+
+    @SuppressWarnings("Duplicates")
+    public static ObservableList<Appointment> getUserAppointments(String username) {
+        ObservableList<Appointment> appointments = FXCollections.observableArrayList();
+
+        try {
+            PreparedStatement stmt = C195.dbConnection.prepareStatement(
+                    "SELECT appointment.appointmentId, appointment.customerId, appointment.title, "
+                            + "appointment.description, appointment.start, appointment.end, appointment.createdBy, "
+                            + "appointment.location, appointment.contact, customer.customerName "
+                            + "FROM appointment, customer "
+                            + "WHERE appointment.customerId = customer.customerId AND appointment.createdBy = ?"
+            );
+            stmt.setString(1, username);
+            ResultSet rs = stmt.executeQuery();
+            while(rs.next()) {
+                Appointment appt = new Appointment();
+                appt.setAppointmentID(rs.getInt("appointment.appointmentId"));
+                appt.setCustomerID(rs.getInt("appointment.customerId"));
+                appt.setTitle(rs.getString("appointment.title"));
+                appt.setDescription(rs.getString("appointment.description"));
+                appt.setLocation(rs.getString("appointment.location"));
+                appt.setContact(rs.getString("appointment.contact"));
+                Instant startInstant = rs.getTimestamp("appointment.start").toInstant();
+                appt.setStart(startInstant.toString());
+                Instant endInstant = rs.getTimestamp("appointment.end").toInstant();
+                appt.setEnd(endInstant.toString());
+                appt.setCustomerName(rs.getString("customer.customerName"));
+                appointments.add(appt);
+            }
+        } catch (SQLException e) {
+            System.out.println("Issue with SQL");
+            e.printStackTrace();
+        }
+        return appointments;
     }
 
 }

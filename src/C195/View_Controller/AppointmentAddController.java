@@ -245,12 +245,10 @@ public class AppointmentAddController implements Initializable {
 
         // If is modify
         if(appointmentToUpdate != null) {
-            System.out.println("We are modifying");
             isModify = true;
             populateAppointmentToModify();
             for(int i = 0; i < customers.size(); i++) {
                 if(customers.get(i).getCustomerId() == appointmentToUpdate.getCustomerID()) { // we found a match
-                    System.out.println("Match found: " + customers.get(i).getName());
                     tableViewCustomers.getSelectionModel().select(customers.get(i));
                 }
             }

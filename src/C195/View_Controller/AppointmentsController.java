@@ -49,7 +49,8 @@ public class AppointmentsController implements Initializable {
         ZonedDateTime now = ZonedDateTime.now(ZoneId.systemDefault());
         ZonedDateTime nextWeek = now.plusWeeks(1);
         ZonedDateTime nextMonth = now.plusMonths(1);
-        ZonedDateTime fifteenMinutes = now.plusMinutes(15);;
+        ZonedDateTime fifteenMinutes = now.plusMinutes(15);
+
         for(Appointment apt: appointments) {
             ZonedDateTime aptStart = ZonedDateTime.from(Instant.parse(apt.getStart()).atZone(ZoneId.systemDefault()));
             // Weekly
@@ -68,6 +69,7 @@ public class AppointmentsController implements Initializable {
         showApptData();
     }
 
+    @SuppressWarnings("Duplicates")
     private void showApptData() {
         ObservableList<Appointment> appts;
         if(radioAllAppointments.isSelected()) {

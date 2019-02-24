@@ -65,6 +65,10 @@ public class RootLayoutController {
         main.showCustomersScreen();
     }
 
+    @FXML public void showReports() throws IOException {
+        main.showReportsScreen();
+    }
+
     @FXML public void loadDummyData() {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Are you sure?");
@@ -80,13 +84,13 @@ public class RootLayoutController {
                 // Address table
                 for(int i = 0; i < NUM_DUMMY_DATA; i++) {
                     // Address
-                    stmt = C195.dbConnection.prepareStatement("INSERT INTO `address` (address, address2, cityId, postalCode, phone, createDate, createdBy, lastUpdate, lastUpdateBy) VALUES ('123 Main','',?,CONCAT('1111',?),'555-1212','2019-02-20 16:16:23','test','2019-01-06 16:16:38','test')");
+                    stmt = C195.dbConnection.prepareStatement("INSERT INTO `address` (address, address2, cityId, postalCode, phone, createDate, createdBy, lastUpdate, lastUpdateBy) VALUES ('123 Main','',?,CONCAT('1111',?),'555-1212','2019-02-20 16:16:23','admin','2019-01-06 16:16:38','admin')");
                     stmt.setInt(1, i + 1);
                     stmt.setInt(2, i);
                     stmt.execute();
 
                     // Appointment
-                    stmt = C195.dbConnection.prepareStatement("INSERT INTO `appointment` (customerId, title, description, location, contact, url, start, end, createDate, createdBy, lastUpdate,lastUpdateBy) VALUES (?,CONCAT('Appointment Title',?),CONCAT('Appointment Description',?),'location','contact','url','2019-01-10 16:00:00','2019-01-10 17:00:00','2019-01-06 16:23:08','test','2019-01-06 16:27:17', 'test')");
+                    stmt = C195.dbConnection.prepareStatement("INSERT INTO `appointment` (customerId, title, description, location, contact, url, start, end, createDate, createdBy, lastUpdate,lastUpdateBy) VALUES (?,CONCAT('Appointment Title',?),CONCAT('Appointment Description',?),'location','contact','url','2019-01-10 16:00:00','2019-01-10 17:00:00','2019-01-06 16:23:08','admin','2019-01-06 16:27:17', 'admin')");
                     stmt.setInt(1, i + 1);
                     stmt.setInt(2, i);
                     stmt.setInt(3, i);
@@ -114,7 +118,7 @@ public class RootLayoutController {
 //            stmt.execute();
 
                 // Cities
-                stmt = C195.dbConnection.prepareStatement("INSERT INTO `city` VALUES (1,'New York',1,'2019-01-06 16:12:07','test','2019-01-06 16:12:07','test'),(2,'Los Angeles',1,'2019-01-06 16:12:28','test','2019-01-06 16:12:28','test'),(3,'Houston',1,'2019-01-06 16:12:41','test','2019-01-06 16:12:41','test'),(4,'Salt Lake City',1,'2019-01-06 16:12:51','test','2019-01-06 16:12:51','test'),(5,'Lancaster',2,'2019-01-06 16:13:19','test','2019-01-06 16:13:19','test'),(6,'London',2,'2019-01-06 16:13:30','test','2019-01-06 16:13:30','test'),(7,'Glasgow',2,'2019-01-06 16:13:50','test','2019-01-06 16:13:50','test'),(8,'Toronto',3,'2019-01-06 16:14:10','test','2019-01-06 16:14:10','test'),(9,'Vancouver',3,'2019-01-06 16:14:20','test','2019-01-06 16:14:20','test'),(10,'Ottawa',3,'2019-01-06 16:14:32','test','2019-01-06 16:14:32','test'),(11,'Oslo',4,'2019-01-06 16:14:41','test','2019-01-06 16:14:41','test'),(12,'Bergen',4,'2019-01-06 16:14:56','test','2019-01-06 16:14:56','test'),(13,'Trondheim',4,'2019-01-06 16:15:06','test','2019-01-06 16:15:06','test');");
+                stmt = C195.dbConnection.prepareStatement("INSERT INTO `city` VALUES (1,'New York',1,'2019-01-06 16:12:07','admin','2019-01-06 16:12:07','admin'),(2,'Los Angeles',1,'2019-01-06 16:12:28','test','2019-01-06 16:12:28','test'),(3,'Houston',1,'2019-01-06 16:12:41','test','2019-01-06 16:12:41','test'),(4,'Salt Lake City',1,'2019-01-06 16:12:51','test','2019-01-06 16:12:51','test'),(5,'Lancaster',2,'2019-01-06 16:13:19','test','2019-01-06 16:13:19','test'),(6,'London',2,'2019-01-06 16:13:30','test','2019-01-06 16:13:30','test'),(7,'Glasgow',2,'2019-01-06 16:13:50','test','2019-01-06 16:13:50','test'),(8,'Toronto',3,'2019-01-06 16:14:10','test','2019-01-06 16:14:10','test'),(9,'Vancouver',3,'2019-01-06 16:14:20','test','2019-01-06 16:14:20','test'),(10,'Ottawa',3,'2019-01-06 16:14:32','test','2019-01-06 16:14:32','test'),(11,'Oslo',4,'2019-01-06 16:14:41','test','2019-01-06 16:14:41','test'),(12,'Bergen',4,'2019-01-06 16:14:56','test','2019-01-06 16:14:56','test'),(13,'Trondheim',4,'2019-01-06 16:15:06','test','2019-01-06 16:15:06','test');");
                 stmt.execute();
 
                 // Countries

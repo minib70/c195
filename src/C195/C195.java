@@ -151,6 +151,19 @@ public class C195 extends Application {
         rootLayoutController.showViewMenu();
     }
 
+    @SuppressWarnings("Duplicates")
+    public void showReportsScreen() throws IOException {
+        // Instantiate the controller
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(C195.class.getResource("View_Controller/Reports.fxml"));
+        ReportsController controller = new ReportsController(this);
+        loader.setController(controller);
+
+        AnchorPane reports = loader.load();
+        rootLayout.getChildren().remove(1);
+        rootLayout.getChildren().add(reports);
+    }
+
     private static void setupLogging() {
         bufferedWriter = null;
         try {
