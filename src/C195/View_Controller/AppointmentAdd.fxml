@@ -37,8 +37,9 @@
                            <children>
                               <HBox prefHeight="42.0" prefWidth="410.0">
                                  <children>
+                                    <Button mnemonicParsing="false" onAction="#clearTextFieldCustomerSearch" text="X" />
+                                    <TextField fx:id="textFieldCustomerSearch" prefHeight="36.0" prefWidth="316.0" />
                                     <Label prefHeight="42.0" prefWidth="74.0" text="Search" />
-                                    <TextField prefHeight="36.0" prefWidth="316.0" />
                                  </children>
                                  <VBox.margin>
                                     <Insets left="10.0" right="10.0" />

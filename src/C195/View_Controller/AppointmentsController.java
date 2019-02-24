@@ -30,6 +30,7 @@ public class AppointmentsController implements Initializable {
     @FXML private TableColumn<Appointment, String> columnAppointmentsCustomer;
     @FXML private TableColumn<Appointment, String> columnAppointmentsStart;
     @FXML private TableColumn<Appointment, String> columnAppointmentsEnd;
+    @FXML private TextField textFieldApptSearch;
     @FXML private ToggleGroup toggleGroupAppointmentView;
     @FXML private RadioButton radioAllAppointments, radioMonthlyAppointments, radioWeeklyAppointments;
     @FXML private Button buttonNewAppointment, buttonModifyAppointment, buttonDeleteAppointment;
@@ -77,10 +78,29 @@ public class AppointmentsController implements Initializable {
             appts = monthlyAppointments;
         }
         FilteredList<Appointment> filteredAppointments = new FilteredList<>(appts, p -> true);
-        //todo: add search?
 
         // Wrap filtered list in sorted list
         SortedList<Appointment> sortedAppointments = new SortedList<>(filteredAppointments);
+
+        textFieldApptSearch.textProperty().addListener((observable, oldValue, newValue) -> {
+            filteredAppointments.setPredicate(appointment -> {
+                if(newValue == null || newValue.isEmpty()) {
+                    return true;
+                }
+
+                // Build filter for search
+                String lowerCaseFilter = newValue.toLowerCase();
+
+                if(appointment.getTitle().toLowerCase().contains(lowerCaseFilter)) { // search matches title
+                    return true;
+                } else if(appointment.getDescription().toLowerCase().contains(lowerCaseFilter)) { // search matches description
+                    return true;
+                } else if(appointment.getCustomerName().toLowerCase().contains(lowerCaseFilter)) { // search matches customer name
+                    return true;
+                }
+                return false;
+            });
+        });
 
         // Bind sorted list to TableView
         sortedAppointments.comparatorProperty().bind(tableViewAppointments.comparatorProperty());
@@ -91,6 +111,10 @@ public class AppointmentsController implements Initializable {
         columnAppointmentsEnd.setCellValueFactory(new PropertyValueFactory<>("localEnd"));
         tableViewAppointments.setItems(sortedAppointments);
         tableViewAppointments.refresh();
+    }
+
+    @FXML private void clearTextFieldAppointmentSearch() {
+        textFieldApptSearch.clear();
     }
 
     @FXML private void customersButtonClicked() throws IOException {

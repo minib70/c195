@@ -50,10 +50,19 @@ public class RootLayoutController {
 
     public void logoutUser() throws IOException {
         if(main.currentUser != null) {
+            menuLoggedInUser.setVisible(false);
             // Set current user to Null
             main.currentUser = null;
             main.showLoginScreen();
         }
+    }
+
+    @FXML public void showAppointments() throws IOException{
+        main.showAppointmentsScreen();
+    }
+
+    @FXML public void showCustomers() throws IOException {
+        main.showCustomersScreen();
     }
 
     @FXML public void loadDummyData() {
@@ -151,6 +160,7 @@ public class RootLayoutController {
     }
 
     @FXML public void setLoggedInUser(String loggedInUser) {
+        menuLoggedInUser.setVisible(true);
         menuLoggedInUser.setText(main.rb.getString("logged_in_user") + " " + loggedInUser);
         menuItemLogout.setDisable(false);
     }

@@ -28,7 +28,7 @@ public class AppointmentAddController implements Initializable {
     @FXML private TableView<Customer> tableViewCustomers;
     @FXML private TableColumn<Customer, String> tableColumnCustomerName;
     @FXML private ComboBox<String> comboBoxStartTime, comboBoxEndTime, comboBoxType;
-    @FXML private TextField textFieldAppointmentTitle;
+    @FXML private TextField textFieldAppointmentTitle, textFieldCustomerSearch;
     private final ObservableList<String> startTimes, endTimes, appointmentTypes;
     private final DateTimeFormatter timeFormatter = DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT);
     private final DateTimeFormatter dtfComboBox = DateTimeFormatter.ofPattern("h:mm a");
@@ -79,6 +79,21 @@ public class AppointmentAddController implements Initializable {
     private void showCustomerDataTable() {
         FilteredList<Customer> filteredCustomers = new FilteredList<>(customers, p -> true);
         SortedList<Customer> sortedCustomers = new SortedList<>(filteredCustomers);
+        textFieldCustomerSearch.textProperty().addListener((observable, oldValue, newValue) -> {
+            filteredCustomers.setPredicate(customer -> {
+                if(newValue == null || newValue.isEmpty()) {
+                    return true;
+                }
+
+                // Build filter for search
+                String lowerCaseFilter = newValue.toLowerCase();
+
+                if(customer.getName().toLowerCase().contains(lowerCaseFilter)) { // Matches customer name
+                    return true;
+                }
+                return false;
+            });
+        });
 
         // Bind fields to tableview
         sortedCustomers.comparatorProperty().bind(tableViewCustomers.comparatorProperty());
@@ -88,6 +103,10 @@ public class AppointmentAddController implements Initializable {
         if(tableViewCustomers.getItems().size() > 0) {
             tableViewCustomers.getSelectionModel().clearAndSelect(0);
         }
+    }
+
+    @FXML public void clearTextFieldCustomerSearch() {
+        textFieldCustomerSearch.clear();
     }
 
     private void populateAppointmentTypes() {
