@@ -2,3 +2,4 @@
 out/
 logging.txt
 *.iml
+/build/
