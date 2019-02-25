@@ -1,3 +1,8 @@
+/*
+ * Author: Taylor Vories
+ * WGU C195 Project
+ */
+
 package C195.Model;
 
 import javafx.beans.property.IntegerProperty;

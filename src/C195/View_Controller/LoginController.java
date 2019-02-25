@@ -1,3 +1,9 @@
+/*
+ * Author: Taylor Vories
+ * WGU C195 Project
+ * Handles the logging in of the application.
+ */
+
 package C195.View_Controller;
 
 import C195.C195;
@@ -24,9 +30,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
 
 public class LoginController implements Initializable {
-    //private VBox rootLayout;
-    //private Stage primaryStage;
-    //private RootLayoutController rootLayoutController;
     private C195 main;
     private final String requiredPassword = "test";
     @FXML private TextField textFieldUsername, textFieldPassword;
@@ -38,8 +41,11 @@ public class LoginController implements Initializable {
         this.main = main;
     }
 
+    /**
+     * Handles the submit button or the enter button.
+     */
     @SuppressWarnings("Duplicates")
-    public void onEnter() throws IOException {
+    @FXML public void onEnter() throws IOException {
         boolean usernameIsValid = true;
         boolean passwordIsValid = true;
         String inputUsername = textFieldUsername.getText();
@@ -92,6 +98,11 @@ public class LoginController implements Initializable {
         }
     }
 
+    /**
+     * Logs user activity to the logfile.
+     * @param username Username to be logged.
+     * @param wasSuccessful Indicates whether the login attempt was successful or unsuccessful.
+     */
     private void logLogin(String username, boolean wasSuccessful) throws IOException{
         ZonedDateTime now = ZonedDateTime.now(ZoneId.systemDefault());
         if(wasSuccessful) {
@@ -103,6 +114,11 @@ public class LoginController implements Initializable {
         }
     }
 
+    /**
+     * Checks database to validate password and username were valid.
+     * @param loginAttempt User making the login attempt.
+     * @return Returns a user from the database if login was successful.
+     */
     private User tryLogin(User loginAttempt) {
         User user = new User();
         try {

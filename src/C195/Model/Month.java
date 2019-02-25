@@ -1,3 +1,8 @@
+/*
+ * Author: Taylor Vories
+ * WGU C195 Project
+ * Class used to assist with reporting.
+ */
 package C195.Model;
 
 public class Month {
@@ -13,6 +18,9 @@ public class Month {
         this.name = name;
     }
 
+    /**
+     * Counter to tell how many appointments per month.
+     */
     public void hit() {
         count++;
     }

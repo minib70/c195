@@ -1,3 +1,9 @@
+/*
+ * Author: Taylor Vories
+ * WGU C195 Project
+ * Appointment screen controller.  Shows existing appointments and the options to manipulate that data.
+ */
+
 package C195.View_Controller;
 
 import C195.C195;
@@ -35,6 +41,10 @@ public class AppointmentsController implements Initializable {
     @FXML private RadioButton radioAllAppointments, radioMonthlyAppointments, radioWeeklyAppointments;
     @FXML private Button buttonNewAppointment, buttonModifyAppointment, buttonDeleteAppointment;
 
+    /**
+     * Constructor
+     * @param main Instance of C195 main to allow for shared methods.
+     */
     public AppointmentsController(C195 main) {
         this.main = main;
         this.appointments = FXCollections.observableArrayList();
@@ -43,6 +53,9 @@ public class AppointmentsController implements Initializable {
         this.appointmentAlertList = new ArrayList<>();
     }
 
+    /**
+     * Loads the existing appointments in the database.
+     */
     private void loadAppointments() {
         appointments = DBMethods.getAppointments();
         // Load up weekly and monthly appointments
@@ -69,6 +82,9 @@ public class AppointmentsController implements Initializable {
         showApptData();
     }
 
+    /**
+     * Shows appointments in the appointment table.
+     */
     @SuppressWarnings("Duplicates")
     private void showApptData() {
         ObservableList<Appointment> appts;
@@ -115,14 +131,23 @@ public class AppointmentsController implements Initializable {
         tableViewAppointments.refresh();
     }
 
+    /**
+     * Clears the search field for appointment searching.
+     */
     @FXML private void clearTextFieldAppointmentSearch() {
         textFieldApptSearch.clear();
     }
 
+    /**
+     * Handles the customer buttong click.  Shows the Customers screen.
+     */
     @FXML private void customersButtonClicked() throws IOException {
         main.showCustomersScreen();
     }
 
+    /**
+     * Clears the table and refreshes it from the database.
+     */
     @FXML private void buttonRefreshDataClicked() {
         // Clear existing data
         appointments.clear();
@@ -132,15 +157,25 @@ public class AppointmentsController implements Initializable {
 
     }
 
+    /**
+     * Handles the disabled buttons when an appointment is selected.
+     * This prevents a user from clicking delete or modify when no appointment is selected.
+     */
     @FXML private void userClickedOnAppointmentTable() {
         buttonDeleteAppointment.setDisable(false);
         buttonModifyAppointment.setDisable(false);
     }
 
+    /**
+     * Handles the new appointment button click.  Shows the appointment add screen.
+     */
     @FXML private void buttonNewAppointmentClicked() throws IOException {
         main.showAppointmentAddScreen(null, appointments);
     }
 
+    /**
+     * Handles the delete button click.  Confirms before deleting selected appointment
+     */
     @FXML private void buttonDeleteAppointmentClicked() {
         ObservableList<Appointment> appointmentsToDelete = tableViewAppointments.getSelectionModel().getSelectedItems();
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -161,6 +196,9 @@ public class AppointmentsController implements Initializable {
         }
     }
 
+    /**
+     * Handles button modify click.  Shows the modify screen with existing appointment.
+     */
     @FXML private void buttonModifyAppointmentClicked() throws IOException {
         if(tableViewAppointments.getSelectionModel().getSelectedItems().size() == 1){
             main.showAppointmentAddScreen(tableViewAppointments.getSelectionModel().getSelectedItem(), appointments);

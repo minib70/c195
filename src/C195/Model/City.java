@@ -1,3 +1,10 @@
+/*
+ * Author: Taylor Vories
+ * WGU C195 Project
+ * This class encapsulates a couple tables from the Database and helps connect the data
+ * together for the application.
+ */
+
 package C195.Model;
 
 import javafx.beans.property.SimpleStringProperty;
@@ -7,6 +14,9 @@ public class City {
     private int cityId, countryId;
     private final StringProperty city, country;
 
+    /**
+     * Constructor
+     */
     public City() {
         this.city = new SimpleStringProperty();
         this.country = new SimpleStringProperty();

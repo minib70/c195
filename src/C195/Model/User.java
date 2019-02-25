@@ -1,3 +1,8 @@
+/*
+ * Author: Taylor Vories
+ * WGU C195 Project
+ * Class to manage a user of the application.
+ */
 package C195.Model;
 
 import javafx.beans.property.IntegerProperty;
@@ -9,6 +14,11 @@ public class User {
     private final IntegerProperty userID, active;
     private final StringProperty username, password;
 
+    /**
+     * Constructor
+     * @param username Name of the user
+     * @param password Password for the user
+     */
     public User(String username, String password) {
         this.username = new SimpleStringProperty(username);
         this.password = new SimpleStringProperty(password);

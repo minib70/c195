@@ -1,3 +1,8 @@
+/*
+ * Author: Taylor Vories
+ * WGU C195 Project
+ */
+
 package C195.Model;
 
 import javafx.beans.property.IntegerProperty;
@@ -15,6 +20,9 @@ public class Appointment {
     private final StringProperty title, description, location, contact, start, end, customerName, localStart, localEnd;
     private final DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd h:mm a");
 
+    /**
+     * Constructor
+     */
     public Appointment() {
         this.appointmentID = new SimpleIntegerProperty();
         this.customerID = new SimpleIntegerProperty();

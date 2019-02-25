@@ -1,11 +1,14 @@
+/*
+ * Author: Taylor Vories
+ * WGU C195 Project
+ * This class is a collection of static methods to be shared with all of the different view controllers.
+ */
+
 package C195.Model;
 
 import C195.C195;
-import com.mysql.cj.protocol.Resultset;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.scene.chart.XYChart;
-import sun.nio.cs.ext.DoubleByte;
 
 import java.sql.*;
 import java.time.*;
@@ -13,18 +16,11 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 
 public class DBMethods {
-    private static final ZoneId zid = ZoneId.systemDefault();
-    private static final DateTimeFormatter timeFormatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT);
-    private static final DateTimeFormatter dtfInstant = DateTimeFormatter.ofPattern("yyyy-MM-dd h:mm a");
 
-    private static ZonedDateTime localZoneToUTC(ZonedDateTime date) {
-        return date.withZoneSameInstant(ZoneId.of("UTC"));
-    }
-
-    private static ZonedDateTime utcToLocalZone(ZonedDateTime date) {
-        return date.withZoneSameInstant(ZoneId.systemDefault());
-    }
-
+    /**
+     * Queries the database for ALL customers and creates customer objects from the DB data.
+     * @return ObservableList of Customers found in the database.
+     */
     public static ObservableList<Customer> getCustomers() {
         ObservableList<Customer> customers = FXCollections.observableArrayList();
         try {
@@ -60,6 +56,10 @@ public class DBMethods {
         return customers;
     }
 
+    /**
+     * Gets all available cities from the database and creates city objects for the application.
+     * @return ObservableList of cities found in the database
+     */
     public static ObservableList<City> getCities() {
         ObservableList<City> cities = FXCollections.observableArrayList();
 
@@ -87,6 +87,14 @@ public class DBMethods {
         return cities;
     }
 
+    /**
+     * Method to save a new or modified customer to the database.
+     * Assumes that a new method has a customer ID of > 0 (Any modified customer will have a valid ID of > 0)
+     * Assumes that a new address will be created every time a new customer is created.
+     * @param customerToSave Customer to be saved to the database.
+     * @param currentUser User who is making the changes.
+     */
+    @SuppressWarnings("Duplicates")
     public static void saveCustomer(Customer customerToSave, String currentUser) {
         // This tells us if this is a modify customer or a new customer
         if(customerToSave.getCustomerId() > 0) {
@@ -177,6 +185,12 @@ public class DBMethods {
         }
     }
 
+    /**
+     * Deletes a customer from the database.  The Customer ID is passed
+     * to the database query in order to delete the correct customer.
+     * Customer IDs are tracked in the Customer Model class.
+     * @param customerToDelete Customer object to be removed from the database.
+     */
     public static void deleteCustomer(Customer customerToDelete) {
         try {
             PreparedStatement custD = C195.dbConnection.prepareStatement(
@@ -192,6 +206,10 @@ public class DBMethods {
         }
     }
 
+    /**
+     * Returns a list of ALL appointments in the database.
+     * @return ObservableList of Appointments found in the database.
+     */
     @SuppressWarnings("Duplicates")
     public static ObservableList<Appointment> getAppointments() {
         ObservableList<Appointment> appointments = FXCollections.observableArrayList();
@@ -227,8 +245,14 @@ public class DBMethods {
         return appointments;
     }
 
+    /**
+     * Saves a new or modified appointment back to the database.
+     * Assumes if the appointmentID is < 0 then it is a new appointment and not a modify.
+     * @param appointmentToSave Appointment object to save.
+     * @param currentUser User making the changes.  This is tracked in the database.
+     * @param customerId ID of the customer that is attached to the appointment.
+     */
     public static void saveAppointment(Appointment appointmentToSave, String currentUser, int customerId) {
-        //TODO: Fix issue with timmezone in database
 
         // This tells us if this is a modify appointment or a new appointment
         if (appointmentToSave.getAppointmentID() > 0) {
@@ -294,6 +318,11 @@ public class DBMethods {
         }
     }
 
+    /**
+     * Deletes an appointment from the database.  Uses the appointmentID to know which appointment to delete.
+     * This is tracked in the Appointment class.
+     * @param appointmentToDelete Appointment to delete.
+     */
     public static void deleteAppointment(Appointment appointmentToDelete) {
         try {
             PreparedStatement stmt = C195.dbConnection.prepareStatement(
@@ -309,6 +338,11 @@ public class DBMethods {
         }
     }
 
+    /**
+     * Gets appointments for the current logged in user.  This is used in reports.
+     * @param username Username of the currently logged in user.
+     * @return ObservableList of Appointments that were created by the user.
+     */
     @SuppressWarnings("Duplicates")
     public static ObservableList<Appointment> getUserAppointments(String username) {
         ObservableList<Appointment> appointments = FXCollections.observableArrayList();
@@ -344,19 +378,4 @@ public class DBMethods {
         }
         return appointments;
     }
-
-    /*public static ObservableList<XYChart.Data<String, Integer>> getAppointmentByMonthReport() {
-        ObservableList<XYChart.Data<String, Integer>> apptByMonthData = FXCollections.observableArrayList();
-
-        try {
-            PreparedStatement stmt = C195.dbConnection.prepareStatement(
-                    "SELECT"
-            );
-        } catch(SQLException e) {
-            System.out.println("Issue with SQL");
-            e.printStackTrace();
-        }
-
-        return apptByMonthData;
-    }*/
 }

@@ -1,3 +1,10 @@
+/*
+ * Author: Taylor Vories
+ * WGU C195 Project
+ * Class to handle the database connection.
+ * You must change the values of the below final fields to have it connect to a different database.
+ */
+
 package C195.Util;
 
 import java.sql.*;
@@ -7,12 +14,16 @@ public class DB {
     private static final String DBNAME = "U04cre";
     private static final String USERNAME = "U04cre";
     private static final String PASSWORD = "53688204115";
-    private static final String URL = "jdbc:mysql://52.206.157.109/";
+    private static final String SERVER_ADDRESS = "52.206.157.109";
+    private static final String URL = "jdbc:mysql://" + SERVER_ADDRESS + "/";
     private static final String JDBC_DRIVER = "com.mysql.cj.jdbc.Driver";
 
     public DB() {
     }
 
+    /**
+     * Connects to the database using the defined values.
+     */
     public static void connectDB() {
         try {
             Class.forName(JDBC_DRIVER);

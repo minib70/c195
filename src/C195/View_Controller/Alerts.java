@@ -1,3 +1,9 @@
+/*
+ * Author: Taylor Vories
+ * WGU C195 Project
+ * Class used to generate alerts to be shared throughout the project.
+ */
+
 package C195.View_Controller;
 
 import javafx.scene.control.Alert;
@@ -15,6 +21,10 @@ class Alerts {
         alert.showAndWait();
     }
 
+    /**
+     * Pops up a reminder alert with a list of Appointments provided.
+     * @param message String of appointments for the reminder.
+     */
     static void reminderAlert(String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Upcoming Appointments");

@@ -1,3 +1,9 @@
+/*
+ * Author: Taylor Vories
+ * WGU C195 Project
+ * Shows reports for the user.
+ */
+
 package C195.View_Controller;
 
 import C195.C195;
@@ -40,6 +46,10 @@ public class ReportsController implements Initializable {
     private ArrayList<CustomerReport> customerReports;
     private final DateTimeFormatter monthOnly = DateTimeFormatter.ofPattern("MMMM");
 
+    /**
+     * Constructor
+     * @param main Instance of C195 main to share methods.
+     */
     public ReportsController(C195 main) {
         this.main = main;
         this.userAppointments = FXCollections.observableArrayList();
@@ -48,12 +58,18 @@ public class ReportsController implements Initializable {
         this.customerReports = new ArrayList<>();
     }
 
+    /**
+     * Loads all appointments and user appointments from the database.
+     */
     private void loadUserAppointments() {
         userAppointments = DBMethods.getUserAppointments(main.currentUser.getUsername());
         allAppointments = DBMethods.getAppointments();
         showApptData();
     }
 
+    /**
+     * Shows appointment data in tableview.  Only shows the appointments that the user created.
+     */
     @SuppressWarnings("Duplicates")
     private void showApptData() {
         FilteredList<Appointment> filteredAppointments = new FilteredList<>(userAppointments, p -> true);
@@ -69,6 +85,9 @@ public class ReportsController implements Initializable {
         tableViewUserSchedule.refresh();
     }
 
+    /**
+     * Shows the appointments by month report.
+     */
     private void showApptsByMonthBarChart() {
         ObservableList<XYChart.Data<String, Integer>> apptByMonthData = FXCollections.observableArrayList();
         XYChart.Series<String, Integer> series = new XYChart.Series<>();
@@ -76,7 +95,7 @@ public class ReportsController implements Initializable {
             LocalDateTime d = LocalDateTime.parse(appointment.getLocalStart(), C195.dtf);
             String apptMonth = monthOnly.format(d);
             for(Month month: months) {
-                if(month.getName().equals(apptMonth)) {
+                if(month.getName().equals(apptMonth)) { // If match, add to hit count.
                     month.hit();
                     break;
                 }
@@ -90,12 +109,15 @@ public class ReportsController implements Initializable {
         barChartApptTypeByMonth.getData().add(series);
     }
 
+    /**
+     * Shows the customer statistics report.
+     */
     private void showCustomerStatsBarChart() {
         ObservableList<XYChart.Data<String, Integer>> customerStats = FXCollections.observableArrayList();
         XYChart.Series<String, Integer> series = new XYChart.Series<>();
         for(Appointment appointment: allAppointments) {
             for(CustomerReport cr: customerReports) {
-                if(appointment.getCustomerName().equals(cr.getName())) {
+                if(appointment.getCustomerName().equals(cr.getName())) { // If match, add to hit count.
                     cr.hit();
                     break;
                 }
@@ -109,6 +131,9 @@ public class ReportsController implements Initializable {
         barChartCustomerStats.getData().add(series);
     }
 
+    /**
+     * Populates the customers into the array list used to get customer stats.
+     */
     private void createCustomerReportObjects() {
         allCustomers = DBMethods.getCustomers();
         for(Customer customer: allCustomers) {
@@ -117,6 +142,9 @@ public class ReportsController implements Initializable {
         }
     }
 
+    /**
+     * Creates month objects for each month of the year.  Used in the reports.
+     */
     private void createMonthObjects() {
         for(String month: monthNames) {
             Month m = new Month(month);

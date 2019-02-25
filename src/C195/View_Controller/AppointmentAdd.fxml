@@ -37,7 +37,7 @@
                            <children>
                               <HBox prefHeight="42.0" prefWidth="410.0">
                                  <children>
-                                    <Button mnemonicParsing="false" onAction="#clearTextFieldCustomerSearch" text="X" />
+                                    <Button mnemonicParsing="false" onAction="#clearTextFieldCustomerSearch" prefHeight="17.0" prefWidth="35.0" text="X" />
                                     <TextField fx:id="textFieldCustomerSearch" prefHeight="36.0" prefWidth="316.0" />
                                     <Label prefHeight="42.0" prefWidth="74.0" text="Search" />
                                  </children>

@@ -1,3 +1,9 @@
+/*
+ * Author: Taylor Vories
+ * WGU C195 Project
+ * Object to track Customer details for C195 project.
+ */
+
 package C195.Model;
 
 import javafx.beans.property.IntegerProperty;
@@ -10,6 +16,9 @@ public class Customer {
     private final StringProperty name, address, address2, city, postalCode, phone, country;
     private int addressId, cityId, countryId;
 
+    /**
+     * Constructor
+     */
     public Customer() {
         this.customerId = new SimpleIntegerProperty();
         this.name = new SimpleStringProperty();

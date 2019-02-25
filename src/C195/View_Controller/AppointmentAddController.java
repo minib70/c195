@@ -1,3 +1,8 @@
+/*
+ * Author: Taylor Vories
+ * WGU C195 Project
+ * Controller for the add/modify appointment screen.
+ */
 package C195.View_Controller;
 
 import C195.C195;
@@ -42,6 +47,12 @@ public class AppointmentAddController implements Initializable {
     private final ZoneId zoneID = ZoneId.systemDefault();
 
 
+    /**
+     * Constructor
+     * @param main Instance of the C195 Main application to allow for shared method access
+     * @param appointmentToUpdate Appointment object to be updated by the user.
+     * @param existingAppointments List of existing appointments used to verify there is no appointment overlap.
+     */
     public AppointmentAddController(C195 main, Appointment appointmentToUpdate, ObservableList<Appointment> existingAppointments) {
         this.main = main;
         this.appointmentToUpdate = appointmentToUpdate;
@@ -52,6 +63,9 @@ public class AppointmentAddController implements Initializable {
         appointmentTypes = FXCollections.observableArrayList();
     }
 
+    /**
+     * Cancels a save and returns to the Appointment screen.
+     */
     @FXML private void buttonCancelClicked() throws IOException {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Cancel modify customer?");
@@ -63,6 +77,12 @@ public class AppointmentAddController implements Initializable {
         }
     }
 
+    /**
+     * Populates times for the start and end time combo boxes.  Sets up times for business hours
+     * in 15 minute increments.
+     * Assumes business hours start at 8:00am and end at 5:00pm.
+     * Assumes local timezone for times being generated.
+     */
     private void populateTimes() {
         // Set up start times
         LocalTime time = LocalTime.of(8, 0);
@@ -75,6 +95,9 @@ public class AppointmentAddController implements Initializable {
         comboBoxEndTime.setItems(endTimes);
     }
 
+    /**
+     * Shows a list of customers that can be attached to an appointment.
+     */
     @SuppressWarnings("Duplicates")
     private void showCustomerDataTable() {
         FilteredList<Customer> filteredCustomers = new FilteredList<>(customers, p -> true);
@@ -105,10 +128,16 @@ public class AppointmentAddController implements Initializable {
         }
     }
 
+    /**
+     * Clears the search Customer search field.
+     */
     @FXML public void clearTextFieldCustomerSearch() {
         textFieldCustomerSearch.clear();
     }
 
+    /**
+     * Populates the list of appointment types available to the user to select.
+     */
     private void populateAppointmentTypes() {
         String[] types = {
                 "New Customer Introduction",
@@ -120,6 +149,13 @@ public class AppointmentAddController implements Initializable {
         comboBoxType.setItems(appointmentTypes);
     }
 
+    /**
+     * Collects the user inputted data and finds any validation errors.
+     * @param field The user interface field the data came from.  This is used to highlight the field
+     *              in red to make it easier for the user to know where they made the mistake.
+     * @param validations Validation error to be added to the alert.
+     * @return Returns a string of validation errors to be shown on the alert.
+     */
     @SuppressWarnings("Duplicates")
     private String validationErrors(Control field, String validations) {
         StringBuilder errors = new StringBuilder();
@@ -133,6 +169,9 @@ public class AppointmentAddController implements Initializable {
         return errors.toString();
     }
 
+    /**
+     * Handles the save button click from the user interface.
+     */
     @SuppressWarnings("Duplicates")
     @FXML private void saveButtonClicked() throws IOException {
         String nameValidation = Validation.validateName(textFieldAppointmentTitle.getText());
@@ -206,11 +245,20 @@ public class AppointmentAddController implements Initializable {
         }
     }
 
+    /**
+     * Method to combine a Time object with a Date object.
+     * @param time String value of time.
+     * @param date Date value from DatePicker
+     * @return Returns a LocalDateTime object of the time and date combined.
+     */
     private LocalDateTime combineDateAndTime(String time, LocalDate date) {
         LocalTime lTime = LocalTime.parse(time, timeFormatter);
         return LocalDateTime.of(date, lTime);
     }
 
+    /**
+     * Populates the fields of an existing appointment.  Modify instead of create new.
+     */
     private void populateAppointmentToModify() {
         textFieldAppointmentTitle.setText(appointmentToUpdate.getTitle());
         comboBoxType.setValue(appointmentToUpdate.getDescription());
@@ -221,6 +269,9 @@ public class AppointmentAddController implements Initializable {
         datePickerAppointmentDate.setValue(start.toLocalDate());
     }
 
+    /**
+     * Initializes the controller.
+     */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // Initialize

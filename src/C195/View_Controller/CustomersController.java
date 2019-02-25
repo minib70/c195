@@ -1,3 +1,9 @@
+/*
+ * Author: Taylor Vories
+ * WGU C195 Project
+ * User interface for managing existing customers or creating new ones.
+ */
+
 package C195.View_Controller;
 
 import C195.C195;
@@ -34,12 +40,19 @@ public class CustomersController implements Initializable {
     private Customer modifyCustomer;
     private boolean isModify;
 
+    /**
+     * Constructor
+     * @param main Instance of C195 main to allow for shared methods.
+     */
     public CustomersController(C195 main) {
         this.main = main;
         this.customers = FXCollections.observableArrayList();
         this.cities = FXCollections.observableArrayList();
     }
 
+    /**
+     * Loads existing customers from the database.
+     */
     private void loadCustomers() {
         // Populate countries
         customers = DBMethods.getCustomers();
@@ -51,10 +64,12 @@ public class CustomersController implements Initializable {
         populateCityComboBox();
     }
 
+    /**
+     * Shows customers loaded from the database in the table view.
+     */
     @SuppressWarnings("Duplicates")
     private void showCustomerDataTable() {
         FilteredList<Customer> filteredCustomers = new FilteredList<>(customers, p -> true);
-        //TODO: add search
         SortedList<Customer> sortedCustomers = new SortedList<>(filteredCustomers);
 
         // Bind fields to tableview
@@ -69,17 +84,26 @@ public class CustomersController implements Initializable {
         }
     }
 
+    /**
+     * Handles appointment button click.  Shows the appointment screen.
+     */
     @FXML private void appointmentsButtonClicked() throws IOException {
         main.showAppointmentsScreen();
     }
 
+    /**
+     * Refreshes the customer data from the database.
+     */
     @FXML private void buttonRefreshDataClicked() {
         // Clear existing data
-        //TODO: Move this to load customers?
         customers.clear();
         loadCustomers();
     }
-    
+
+    /**
+     * A method to set multiple user interface controls to editible or not.
+     * @param editable True sets the fields to editiable, false disables edit.
+     */
     private void setCustomerTextFieldEditable(boolean editable) {
         textFieldName.setEditable(editable);
         textFieldAddress1.setEditable(editable);
@@ -88,16 +112,22 @@ public class CustomersController implements Initializable {
         comboBoxCity.setDisable(!editable);
         comboBoxCity.setStyle("-fx-text-fill: -fx-text-base-color;-fx-opacity: 1;");
         // this will be auto populated
-        // textFieldCountry.setEditable(editable);
         textFieldPostalCode.setEditable(editable);
         textFieldPhone.setEditable(editable);
     }
 
+    /**
+     * Enables buttons when a user selects a customer from the table.
+     */
     @FXML private void userClickedOnCustomerTable() {
         buttonModifyCustomer.setDisable(false);
         buttonDeleteCustomer.setDisable(false);
     }
 
+    /**
+     * Shows the details of the selected customer on the TableView.
+     * @param selectedCustomer
+     */
     private void showCustomerDetails(Customer selectedCustomer) {
         textFieldCustomerID.setText(String.valueOf(selectedCustomer.getCustomerId()));
         textFieldName.setText(selectedCustomer.getName());
@@ -112,11 +142,18 @@ public class CustomersController implements Initializable {
         textFieldPhone.setText(selectedCustomer.getPhone());
     }
 
+    /**
+     * Shows and hides the save and cancel buttons when modifying or creating a new user.
+     * @param visable True sets the buttons to visable, false hides them.
+     */
     private void setButtonVisable(boolean visable) {
         buttonSave.setVisible(visable);
         buttonCancel.setVisible(visable);
     }
 
+    /**
+     * Handles the modify button click.
+     */
     @FXML private void modifyButtonClicked() {
         modifyCustomer = tableViewCustomers.getSelectionModel().getSelectedItem();
         editMode(true);
@@ -132,6 +169,10 @@ public class CustomersController implements Initializable {
         isModify = true;
     }
 
+    /**
+     * Bulk sets UI fields to editable or not.
+     * @param editable True sets fields to editable, false disables edit.
+     */
     private void editMode(boolean editable) {
         setButtonVisable(editable);
         setCustomerTextFieldEditable(editable);
@@ -143,6 +184,10 @@ public class CustomersController implements Initializable {
         }
     }
 
+    /**
+     * Handles the cancel button click.  Shows confirmation before canceling.
+     */
+    @SuppressWarnings("Duplicates")
     @FXML private void cancelButtonClicked() {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Cancel modify customer?");
@@ -163,6 +208,10 @@ public class CustomersController implements Initializable {
         }
     }
 
+    /**
+     * Handles the save button click.  Shows confirmation before saving.
+     */
+    @SuppressWarnings("Duplicates")
     @FXML private void saveButtonClicked() {
         // Validate fields
         String nameValidation = Validation.validateName(textFieldName.getText());
@@ -225,6 +274,9 @@ public class CustomersController implements Initializable {
         }
     }
 
+    /**
+     * Handles the delete button click.  Confirms before deleting a customer.
+     */
     @FXML private void deleteButtonClicked() {
         Customer customerToDelete = tableViewCustomers.getSelectionModel().getSelectedItem();
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -238,6 +290,9 @@ public class CustomersController implements Initializable {
         }
     }
 
+    /**
+     * Handles the add customer button click.
+     */
     @FXML private void addCustomerButtonClicked() {
         editMode(true);
         populateCityComboBox();
@@ -247,6 +302,9 @@ public class CustomersController implements Initializable {
         isModify = false;
     }
 
+    /**
+     * Bulk clears text fields for UI interactions.
+     */
     private void clearTextFields() {
         textFieldName.setText(null);
         textFieldAddress1.setText(null);
@@ -256,10 +314,13 @@ public class CustomersController implements Initializable {
         textFieldCustomerID.setText("VALUE GENERATED AUTOMATICALLY");
     }
 
-    private void addNewCustomer(Customer customerToSave) {
-
-    }
-
+    /**
+     * Validates and creates an error message for alerting the user.
+     * @param field Field that will be underlined in red when a validation error occurs.
+     * @param validations Error message to be added to the alert.
+     * @return Returns a string of validation errors to be alerted.
+     */
+    @SuppressWarnings("Duplicates")
     private String validationErrors(TextField field, String validations) {
         StringBuilder errors = new StringBuilder();
         if(!validations.isEmpty()) {
@@ -272,13 +333,23 @@ public class CustomersController implements Initializable {
         return errors.toString();
     }
 
+    /**
+     * Keeps the country and city fields in sync.
+     */
     @FXML private void mouseClickedCountryTextField() {
         textFieldCountry.getParent().requestFocus();
     }
+
+    /**
+     * Disallows the user to keep focus on a disabled field.
+     */
     @FXML private void mouseClickedCustomerIDTextField() {
         textFieldCustomerID.getParent().requestFocus();
     }
 
+    /**
+     * Populates the combo box with Cities found in the database.
+     */
     public void populateCityComboBox() {
         if(cities.size() > 0) {
             comboBoxCity.setItems(cities);
