@@ -215,7 +215,7 @@ public class DBMethods {
         ObservableList<Appointment> appointments = FXCollections.observableArrayList();
 
         try {
-            PreparedStatement stmt = C195.dbConnection.prepareStatement( //TODO: Add customer name
+            PreparedStatement stmt = C195.dbConnection.prepareStatement(
                     "SELECT appointment.appointmentId, appointment.customerId, appointment.title, "
                             + "appointment.description, appointment.start, appointment.end, appointment.createdBy, "
                             + "appointment.location, appointment.contact, customer.customerName "

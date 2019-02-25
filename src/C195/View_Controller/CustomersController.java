@@ -266,7 +266,7 @@ public class CustomersController implements Initializable {
                 labelCustomerStatus.setText(null);
                 labelCustomerStatus.setStyle(null);
                 editMode(false);
-                buttonRefreshDataClicked(); //TODO: Set this to an action instead of button
+                buttonRefreshDataClicked();
                 // Clears modify object
                 modifyCustomer = null;
             }
@@ -286,7 +286,7 @@ public class CustomersController implements Initializable {
         Optional<ButtonType> optional = alert.showAndWait();
         if(optional.get() == ButtonType.OK) {
             DBMethods.deleteCustomer(customerToDelete);
-            buttonRefreshDataClicked(); //TODO: set to a method and not a button
+            buttonRefreshDataClicked();
         }
     }
 
@@ -362,8 +362,6 @@ public class CustomersController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        //TODO: Add translations
-
         // Hide save and cancel by default
         buttonSave.setVisible(false);
         buttonCancel.setVisible(false);
